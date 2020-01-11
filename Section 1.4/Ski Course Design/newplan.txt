@@ -1,0 +1,7 @@
+1. Take (max-min-17)/2, add it to the smallest, subtract from the largest, round both to nearest integer
+
+New 1. Take average of all numbers
+1.1. Set the min and max apart by 17
+2. For every old hill that is less than that, move it to the new min
+3. For every old hill that is in between that, don't do anything
+4. For every old hill that is greater than that, move it to the new max

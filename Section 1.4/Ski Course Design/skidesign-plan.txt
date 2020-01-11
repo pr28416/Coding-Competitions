@@ -1,0 +1,16 @@
+solving algorithm (ex: 1 4 20 21 24)
+1. Take avg(largest, smallest), set equal to avg
+	(1+24)/2 = 12
+2. Add avg to smallest, subtract from largest
+	—> 13 4 20 21 12
+3. Get total amount to change by, set equal to change
+	17 - (new_largest - new_smallest)
+—>	17 - (12 - 13)
+—>	18
+
+4. Divide change into equal increments, 2 CASES - NEED TO CHECK BOTH AT THE END TO SEE WHICH IS CHEAPER!
+	18
+—>	9, 9
+5. Subtract smallest by first increment, increase largest by second increment
+	13 4 20 21 12
+—>	4 4 20 21 21

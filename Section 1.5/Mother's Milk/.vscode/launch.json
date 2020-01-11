@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - milk3",
+            "request": "launch",
+            "mainClass": "milk3",
+            "projectName": "Mother's Milk_d9f404c3"
+        }
+    ]
+}
