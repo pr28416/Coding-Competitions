@@ -3,7 +3,7 @@ with open("loan.in", "r") as f:
     t = f.readline().split(" ")
     N, K, M = int(t[0]), int(t[1]), int(t[2])
 
-print(N, K, M)
+# print(N, K, M)
 
 def payBackMethod(N, G, X):
     Y = (N-G)//X
@@ -50,7 +50,7 @@ def binarySearchThrough(l):
     x = len(l)//2
     # Check if middle works
     # print("checking: %s" % (l))
-    print("checking", end="\t")
+    # print("checking", end="\t")
     if checkSolution(l[x]):
         if not checkSolution(l[x]+1):
             return l[x]
@@ -75,7 +75,7 @@ def testBinary(l):
     while True:
         
         steps += 1
-        print("x: %s, checking through %s:%s" % (x, st, end))
+        # print("x: %s, checking through %s:%s" % (x, st, end))
         if a:
             if not b:
                 return l[x]
@@ -97,6 +97,8 @@ def testBinary(l):
 
 # print(checkSolution(10000000))
 weif = [i for i in range(N)]
-print(testBinary(weif))
+a = testBinary(weif)
+with open("loan.out", "w") as f:
+    f.write("%s\n" % a)
 # print("steps:", steps)
 # print(binarySearchThrough([i for i in range(N)]))
