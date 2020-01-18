@@ -107,6 +107,7 @@ def testBinary(l):
 #     print(G)
 
 # print(checkSolution(10000000))
+
 weif = [i for i in range(N)]
 a = testBinary(weif)
 with open("loan.out", "w") as f:
