@@ -11,16 +11,39 @@ def payBackMethod(N, G, X):
         Y = M
     return Y
 
+runTimes = []
+
 def checkSolution(X):
+    global runTimes
     global K
     global N
     total = 0
     dayCount = 1
+    a = 0
     while total < N and dayCount <= K:
+        a += 1
         # print("\t\tsubtracting")
         total += payBackMethod(N, total, X)
         dayCount += 1
+    runTimes.append(a)
+    # print("ran %s steps" % a)
     return total >= N
+
+def newCheck(x):
+    totalPaid = 0
+    daysElapsed = 1
+    while totalPaid < N and daysElapsed <= K:
+        # print("paid %s so far" % totalPaid)
+        a = payBackMethod(N, totalPaid, x)
+        if a == M:
+            if (K-daysElapsed)*M+totalPaid >= N:
+                return True
+            else:
+                return False
+        else:
+            totalPaid += a
+            daysElapsed
+    return totalPaid >= N
 
 def binarySearchThrough(l):
     global N
@@ -48,10 +71,11 @@ def testBinary(l):
     # Check if middle works
     # print("checking: %s" % (l))
     # print("checking", end="\t")
-    a, b = checkSolution(l[x]), checkSolution(l[x+1])
+    a, b = newCheck(l[x]), newCheck(l[x+1])
     while True:
+        
         steps += 1
-        # print("x: %s, checking through %s:%s" % (x, st, end))
+        print("x: %s, checking through %s:%s" % (x, st, end))
         if a:
             if not b:
                 return l[x]
@@ -62,8 +86,9 @@ def testBinary(l):
         else:
             # Solution is less
             end = x
-        x = len(l[st:end])//2
-        a, b = checkSolution(l[x]), checkSolution(l[x+1])
+        x = (st+end)//2
+        a, b = newCheck(l[x]), newCheck(l[x+1])
+        
 
 # G = 0
 # for i in range(5):
@@ -71,6 +96,7 @@ def testBinary(l):
 #     print(G)
 
 # print(checkSolution(10000000))
-print(testBinary([i for i in range(N)]))
-print("steps:", steps)
+weif = [i for i in range(N)]
+print(testBinary(weif))
+# print("steps:", steps)
 # print(binarySearchThrough([i for i in range(N)]))
