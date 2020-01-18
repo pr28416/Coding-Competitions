@@ -30,19 +30,30 @@ def checkSolution(X):
     return total >= N
 
 def newCheck(x):
+    global runTimes, N, K, M
     totalPaid = 0
     daysElapsed = 1
+    q = 0
     while totalPaid < N and daysElapsed <= K:
         # print("paid %s so far" % totalPaid)
+        q += 1
         a = payBackMethod(N, totalPaid, x)
+        totalPaid += a
         if a == M:
             if (K-daysElapsed)*M+totalPaid >= N:
+                runTimes.append(q)
                 return True
             else:
+                runTimes.append(q)
                 return False
+        
         else:
-            totalPaid += a
-            daysElapsed
+            runTimes.append(q)
+            
+            if (K-daysElapsed) * M + totalPaid >= N:
+                return True
+            daysElapsed += 1
+            
     return totalPaid >= N
 
 def binarySearchThrough(l):
@@ -100,5 +111,6 @@ weif = [i for i in range(N)]
 a = testBinary(weif)
 with open("loan.out", "w") as f:
     f.write("%s\n" % a)
+print("newChecks max steps:", max(runTimes))
 # print("steps:", steps)
 # print(binarySearchThrough([i for i in range(N)]))
