@@ -99,6 +99,7 @@ def testBinary(l):
             end = x
         x = (st+end)//2
         a, b = newCheck(l[x]), newCheck(l[x+1])
+        assert st != end
         
 
 # G = 0
@@ -110,6 +111,7 @@ def testBinary(l):
 
 weif = [i for i in range(N)]
 a = testBinary(weif)
+# a = newCheck(2)
 with open("loan.out", "w") as f:
     f.write("%s\n" % a)
 print("newChecks max steps:", max(runTimes))
