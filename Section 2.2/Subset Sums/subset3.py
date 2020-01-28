@@ -16,13 +16,20 @@ def printDP(dp):
         print()
 
 allSets = set()
+steps = 0
 
 def span(dp, node, totalSum, currentSet):
-    global n
+    global n, steps
     # Check to see if 0 is the current spot. If so, add the currentSet to allSets
+    print("\nCurrently at (%s, %s)" % (node, totalSum))
+    print("Set is", currentSet)
+    steps += 1
     if dp[node][totalSum] == 0:
         if sum(currentSet) == n*(n+1)//4:
+            print("Adding %s to allSets" % currentSet)
             allSets.add(tuple(currentSet))
+        else:
+            print("Did not add %s to allSets" % currentSet)
         return
 
     # Check to see if you can traverse left
@@ -30,13 +37,19 @@ def span(dp, node, totalSum, currentSet):
         # Span left, add number to currentSet
         mod = currentSet.copy()
         mod.add(node)
+        print("Spanning left to (%s, %s)" % (node, totalSum-node))
         span(dp, node, totalSum-node, mod.copy())
         del mod
+    else:
+        print("Can't span left")
     
     # Check to see if you can traverse up
     if node-1 >= 0 and dp[node][totalSum] == dp[node-1][totalSum]:
         # Span up
+        print("Spanning up to (%s, %s)" % (node-1, totalSum))
         span(dp, node-1, totalSum, currentSet.copy())
+    else:
+        print("Can't span up")
 
 def populate(N):
     if (N*(N+1))//2 % 2 == 0:
@@ -59,19 +72,17 @@ def populate(N):
                     dp[node][totalSum] = sum(seenValues)
                     break
 
+        printDP(dp)
         # PART 3: Starting from the bottom-right corner, create sets
-        allSets.clear()
+        # allSets.clear()
         span(dp, N, req, set())
-        # c = 0
-        # for node in range(N, -1, -1):
-        #     for totalSum in range(req, -1, -1):
-        #         if dp[node][totalSum] == req:
-        #             c += 1
-        
+
         answer = len(allSets)//2
-        print("%s: %s" % (N, answer))
+        print("\n\nFINAL --> %s: %s" % (N, answer))
     else:
         print("%s: \\\\" % N)
+
+    print("\nTotal steps:", steps)
 
 # for i in range(2, 10):
 #     populate(i)
