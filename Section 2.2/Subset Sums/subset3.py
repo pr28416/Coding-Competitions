@@ -5,7 +5,6 @@ TASK: subset
 """
 
 n = 0
-answer = 0
 with open("subset.in", "r") as f:
     n = int(f.readline())
 
@@ -21,15 +20,15 @@ steps = 0
 def span(dp, node, totalSum, currentSet):
     global n, steps
     # Check to see if 0 is the current spot. If so, add the currentSet to allSets
-    print("\nCurrently at (%s, %s)" % (node, totalSum))
-    print("Set is", currentSet)
+    # print("\nCurrently at (%s, %s)" % (node, totalSum))
+    # print("Set is", currentSet)
     steps += 1
     if dp[node][totalSum] == 0:
         if sum(currentSet) == n*(n+1)//4:
-            print("Adding %s to allSets" % currentSet)
+            # print("Adding %s to allSets" % currentSet)
             allSets.add(tuple(currentSet))
-        else:
-            print("Did not add %s to allSets" % currentSet)
+        # else:
+            # print("Did not add %s to allSets" % currentSet)
         return
 
     # Check to see if you can traverse left
@@ -37,21 +36,29 @@ def span(dp, node, totalSum, currentSet):
         # Span left, add number to currentSet
         mod = currentSet.copy()
         mod.add(node)
-        print("Spanning left to (%s, %s)" % (node, totalSum-node))
+        # print("Spanning left to (%s, %s)" % (node, totalSum-node))
         span(dp, node, totalSum-node, mod.copy())
         del mod
-    else:
-        print("Can't span left")
+    # elif dp[node][totalSum] + sum(currentSet) == n*(n+1)//4:
+    #     print("ALERT")
+    #     mod = currentSet.copy()
+    #     mod.add(dp[node][totalSum])
+    #     print("Adding %s to allSets" % mod)
+    #     allSets.add(tuple(mod))
+    #     return
+    # else:
+    #     print("Can't span left")
     
-    # Check to see if you can traverse up
-    if node-1 >= 0 and dp[node][totalSum] == dp[node-1][totalSum]:
+    # Check to see if you can traverse up, reduce over-counting by not checking multiple reqs
+    if node-1 >= 0 and dp[node][totalSum] == dp[node-1][totalSum] and totalSum != n*(n+1)//4:
         # Span up
-        print("Spanning up to (%s, %s)" % (node-1, totalSum))
+        # print("Spanning up to (%s, %s)" % (node-1, totalSum))
         span(dp, node-1, totalSum, currentSet.copy())
-    else:
-        print("Can't span up")
+    # else:
+    #     print("Can't span up")
 
 def populate(N):
+    answer = 0
     if (N*(N+1))//2 % 2 == 0:
 
         req = (N*(N+1))//4
@@ -72,20 +79,23 @@ def populate(N):
                     dp[node][totalSum] = sum(seenValues)
                     break
 
-        printDP(dp)
+        # printDP(dp)
         # PART 3: Starting from the bottom-right corner, create sets
         # allSets.clear()
         span(dp, N, req, set())
 
-        answer = len(allSets)//2
-        print("\n\nFINAL --> %s: %s" % (N, answer))
+        answer = len(allSets)//1
+        # print("\n\nFINAL --> %s: %s" % (N, answer))
     else:
         print("%s: \\\\" % N)
 
     print("\nTotal steps:", steps)
+    for i in allSets:
+        print(i)
+    
+    with open("subset.out", "w") as f:
+        f.write("%s\n" % answer)
 
 # for i in range(2, 10):
 #     populate(i)
 populate(n)
-with open("subset.out", "w") as f:
-    f.write("%s\n" % answer)
