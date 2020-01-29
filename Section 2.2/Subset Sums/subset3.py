@@ -83,7 +83,7 @@ def populate(N):
         print("%s by %s table" % (N, req))
         # PART 3: Starting from the bottom-right corner, create sets
         # allSets.clear()
-        span(dp, N, req, set())
+        # span(dp, N, req, set())
 
         answer = len(allSets)//1
         # print("\n\nFINAL --> %s: %s" % (N, answer))
