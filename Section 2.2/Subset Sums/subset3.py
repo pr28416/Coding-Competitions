@@ -79,7 +79,7 @@ def populate(N):
                     dp[node][totalSum] = sum(seenValues)
                     break
 
-        # printDP(dp)
+        printDP(dp)
         print("%s by %s table" % (N, req))
         # PART 3: Starting from the bottom-right corner, create sets
         # allSets.clear()
