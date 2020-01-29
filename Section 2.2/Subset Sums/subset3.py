@@ -80,6 +80,7 @@ def populate(N):
                     break
 
         # printDP(dp)
+        print("%s by %s table" % (N, req))
         # PART 3: Starting from the bottom-right corner, create sets
         # allSets.clear()
         span(dp, N, req, set())
