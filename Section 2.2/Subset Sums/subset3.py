@@ -26,6 +26,7 @@ def span(dp, node, totalSum, currentSet):
     if dp[node][totalSum] == 0:
         if sum(currentSet) == n*(n+1)//4:
             # print("Adding %s to allSets" % currentSet)
+            print(tuple(currentSet))
             allSets.add(tuple(currentSet))
         # else:
             # print("Did not add %s to allSets" % currentSet)
@@ -80,7 +81,7 @@ def populate(N):
                     break
 
         printDP(dp)
-        print("%s by %s table" % (N, req))
+        # print("%s by %s table" % (N, req))
         # PART 3: Starting from the bottom-right corner, create sets
         # allSets.clear()
         # span(dp, N, req, set())

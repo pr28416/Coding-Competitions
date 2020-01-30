@@ -1,13 +1,39 @@
-class Subset {
+/*
+ID: pranav.19
+LANG: JAVA
+TASK: subset
+*/
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+class subset {
 
     static int[][] dp;
-    int answer = 0;
-    public static void main(String[] args) {
-        int n = 7;
+    static int answer = 0;
+    public static void main(String[] args) throws IOException {
+        double start = (double)System.nanoTime()/1000000000;
+
+        int n = 0;
+        BufferedReader f = new BufferedReader(new FileReader("subset.in"));
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("subset.out")));
+        
+        n = Integer.parseInt(f.readLine());
+        System.out.println(String.format("Using N = %d", n));
         populate(n);
+        out.println(answer);
+        out.close();
+
+        double end = (double)System.nanoTime()/1000000000;
+        System.out.println(String.format("Program took %.6f seconds", (end-start)));
     }
 
     public static void populate(int N) {
+        // System.out.println("Starting span");
         if (N*(N+1)/2 % 2 == 0) {
             int req = N*(N+1)/4;
 
@@ -23,22 +49,44 @@ class Subset {
                     }
                 }
             }
-            printDP(dp);
+            // printDP(dp);
+            // System.out.println("Finished populating\nStarting span");
 
             // PART 2: Starting from the bottom-right corner, create sets
-            span(N, dp, N, req, 0);
-            System.out.println(e);
+            span(N, dp, N, req, 0, -1);
+            // System.out.println("Finished span");
+            // System.out.println(e);
+            answer = e;
+        } else {
+            // System.out.println("Ended program; result is 0");
         }
     }
 
     static int e = 0;
 
-    public static void span(int n, int[][] dp, int node, int totalSum, int currentSum) {
+    static int sum(int[] a) {
+        int w = 0;
+        for (int i: a) {
+            w += i;
+        }
+        return w;
+    }
+
+    static String toString(int[] a) {
+        String w = "";
+        for (int i: a) {
+            w += i+" ";
+        }
+        return w;
+    }
+
+    public static void span(int n, int[][] dp, int node, int totalSum, int currentSum, int lastUsed) {
         // Check to see if 0 is the current spot. If so, return e+1
-        System.out.println("----");
-        System.out.println(currentSum);
+        // System.out.println("----");
+        // System.out.println(currentSum);
         if (dp[node][totalSum] == 0) {
             if (currentSum == n*(n+1)/4) {
+                // System.out.println(toString(currentSet));
                  e ++;
             }
             return;
@@ -47,13 +95,16 @@ class Subset {
         // Check to see if you can traverse left
         if (dp[node][totalSum] >= node) {
             // Span left, increment currentSum
-            span(n, dp, node, totalSum, currentSum+node);
+            if (totalSum != lastUsed) {
+                span(n, dp, node, totalSum-node, currentSum+node, totalSum-node);
+            }
+            
         }
 
         // Check to see if you can traverse up
         if (node-1 >= 0 && dp[node][totalSum] == dp[node-1][totalSum] && totalSum != n*(n+1)/4) {
             // Span up
-            span(n, dp, node-1, totalSum, currentSum);
+            span(n, dp, node-1, totalSum, currentSum, -1);
         }
     }
 
