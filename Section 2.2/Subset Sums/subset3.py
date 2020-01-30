@@ -90,8 +90,8 @@ def populate(N):
         print("%s: \\\\" % N)
 
     print("\nTotal steps:", steps)
-    for i in allSets:
-        print(i)
+    # for i in allSets:
+    #     print(i)
     
     with open("subset.out", "w") as f:
         f.write("%s\n" % answer)
