@@ -16,16 +16,6 @@ public class lamps {
         runProgram();
     }
 
-    // public static void debug() throws IOException {
-    //     String t = "11111111";
-    //     System.out.println("Before: "+t);
-    //     t = button1(t);
-    //     t = button3(t);
-    //     t = button2(t);
-    //     t = button4(t);
-    //     System.out.println("After: "+t);
-    // }
-
     public static void runProgram() throws IOException {
         
         System.out.println("Started");
@@ -61,7 +51,7 @@ public class lamps {
         }
 
         long startTime = System.currentTimeMillis();
-        span(bulbState, 0);
+        span(bulbState, 0, "1");
         long endTime = System.currentTimeMillis();
         System.out.println(String.format("Program took %s seconds", (endTime-startTime)/1000.0));
 
@@ -127,7 +117,7 @@ public class lamps {
         return n;
     }
 
-    public static void span(String bulbState, int c) {
+    public static void span(String bulbState, int c, String lastUsed) {
         for (int i = c; i < C; i += 4) {
             if (used.containsKey(""+i+"-"+bulbState)) {
                 return;
@@ -157,22 +147,28 @@ public class lamps {
         } else {
             used.put(""+c+"-"+bulbState, c);
         }
-        // // Button 2+3
-        // String b23 = button2(button3(bulbState));
-        // span(b23, c+2);
-        // Button 1
+
         String b1 = button1(bulbState);
-        span(b1, c+1);
-        // Button 2
         String b2 = button2(bulbState);
-        span(b2, c+1);
-        // Button 3
         String b3 = button3(bulbState);
-        span(b3, c+1);
-        
-        // Button 4
         String b4 = button4(bulbState);
-        span(b4, c+1);
+
+        if (lastUsed.equals("4")) {
+            span(b4, c+1, "4");
+        } else if (lastUsed.equals("3")) {
+            span(b3, c+1, "3");
+            span(b4, c+1, "4");
+        } else if (lastUsed.equals("2")) {
+            span(b2, c+1, "2");
+            span(b3, c+1, "3");
+            span(b4, c+1, "4");
+        } else {
+            span(b1, c+1, "1");
+            span(b2, c+1, "2");
+            span(b3, c+1, "3");
+            span(b4, c+1, "4");
+        }       
+        
         // After
         return;
     }
