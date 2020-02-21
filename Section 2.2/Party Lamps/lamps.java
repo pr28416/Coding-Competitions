@@ -19,7 +19,7 @@ public class lamps {
     public static void runProgram() throws IOException {
         
         System.out.println("STARTED");
-        BufferedReader reader = new BufferedReader(new FileReader(new File("lamps3.in")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File("lamps.in")));
         PrintWriter writer = new PrintWriter(new File("lamps.out"));
 
         N = Integer.parseInt(reader.readLine());
@@ -120,6 +120,7 @@ public class lamps {
     public static void span(String bulbState, int c, int lastUsed) {
         for (int i = c; i < C; i += 4) {
             if (used.contains(""+i+"-"+bulbState)) {
+                System.out.println("returning");
                 return;
             }
         }
