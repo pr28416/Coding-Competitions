@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch)-lamps<USACO_a3fce133>",
+            "request": "launch",
+            "mainClass": "lamps",
+            "projectName": "USACO_a3fce133"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-lamps2<USACO_a3fce133>",
+            "request": "launch",
+            "mainClass": "lamps2",
+            "projectName": "USACO_a3fce133"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-temp<USACO_a3fce133>",
+            "request": "launch",
+            "mainClass": "temp",
+            "projectName": "USACO_a3fce133"
+        }
+    ]
+}

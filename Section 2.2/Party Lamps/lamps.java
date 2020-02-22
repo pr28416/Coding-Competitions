@@ -19,7 +19,7 @@ public class lamps {
     public static void runProgram() throws IOException {
         
         System.out.println("STARTED");
-        BufferedReader reader = new BufferedReader(new FileReader(new File("lamps.in")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File("lamps3.in")));
         PrintWriter writer = new PrintWriter(new File("lamps.out"));
 
         N = Integer.parseInt(reader.readLine());
@@ -51,7 +51,8 @@ public class lamps {
         }
 
         long startTime = System.currentTimeMillis();
-        span(bulbState, 0, 1);
+        span(bulbState, 0, 1, 0);
+        
         long endTime = System.currentTimeMillis();
         System.out.println(String.format("Program took %s seconds", (endTime-startTime)/1000.0));
 
@@ -76,9 +77,11 @@ public class lamps {
     public static String button1(String s) {
         String n = "";
         for (int i = 0; i < s.length(); i++) {
-            n += ""+(Integer.parseInt(s.substring(i, i+1))+1)%2;
+            // THIS IS WHERE THE ERROR IS OCCURRING!!!!
+            n += ""+(Integer.parseInt(s.substring(i, i+1))+1)%2;            
         }
         return n;
+        
     }
 
     public static String button2(String s) {
@@ -117,10 +120,10 @@ public class lamps {
         return n;
     }
 
-    public static void span(String bulbState, int c, int lastUsed) {
+    public static void span(String bulbState, int c, int lastUsed, int depth) {
+        System.out.print(depth+"\t");
         for (int i = c; i < C; i += 4) {
             if (used.contains(""+i+"-"+bulbState)) {
-                System.out.println("returning");
                 return;
             }
         }
@@ -142,32 +145,36 @@ public class lamps {
                     return;
                 }
             }
-            // System.out.println("Worked "+bulbState);
             allSets.add(bulbState);
             return;
         } else {
             used.add(""+c+"-"+bulbState);
         }
-
-        String b1 = button1(bulbState);
+        String b1 = "";
+        try {
+            b1 = button1(bulbState);
+        } catch (Exception e) {
+            System.out.println("ERROR ERROR: "+e.getLocalizedMessage());
+        }
+        
         String b2 = button2(bulbState);
         String b3 = button3(bulbState);
         String b4 = button4(bulbState);
 
         if (lastUsed == 4) {
-            span(b4, c+1, 4);
+            span(b4, c+1, 4, depth+1);
         } else if (lastUsed == 3) {
-            span(b3, c+1, 3);
-            span(b4, c+1, 4);
+            span(b3, c+1, 3, depth+1);
+            span(b4, c+1, 4, depth+1);
         } else if (lastUsed == 2) {
-            span(b2, c+1, 2);
-            span(b3, c+1, 3);
-            span(b4, c+1, 4);
+            span(b2, c+1, 2, depth+1);
+            span(b3, c+1, 3, depth+1);
+            span(b4, c+1, 4, depth+1);
         } else {
-            span(b1, c+1, 1);
-            span(b2, c+1, 2);
-            span(b3, c+1, 3);
-            span(b4, c+1, 4);
+            span(b1, c+1, 1, depth+1);
+            span(b2, c+1, 2, depth+1);
+            span(b3, c+1, 3, depth+1);
+            span(b4, c+1, 4, depth+1);
         }       
         
         // After
