@@ -12,7 +12,7 @@ finalC = 0
 c = 0
 bulbs = ""
 finalState = []
-with open("lamps3.in", "r") as f:
+with open("lamps.in", "r") as f:
     N = int(f.readline())
     finalC = int(f.readline())
     on = f.readline().split()
@@ -65,42 +65,28 @@ def button4(s):
 
 previousList = {}
 currentList = {bulbs}
-# fullList = [bulbs]
-# print("Started bfs")
+
 for c in range(finalC):
     previousList = currentList.copy()
     temp = set([])
-    # bemp = []
+
     for i in currentList:
         temp.add(button1(i))
         temp.add(button2(i))
         temp.add(button3(i))
         temp.add(button4(i))
-        # bemp.append(button1(i))
-        # bemp.append(button2(i))
-        # bemp.append(button3(i))
-        # bemp.append(button4(i))
-    if len(previousList - temp) == 0:
+
+    if len(previousList - temp) == 0 and len(temp - previousList) == 0:
         break
 
     currentList = temp
-    # print(len(currentList), end="\t")
-    # fullList = bemp
-# print("\nEnded bfs")
-# print("current")
-# for i in currentList:
-#     print(i)
-# print("full")
-# for i in fullList:
-#     print(i)
-# print("Started checks")
+
 for state in currentList:
     for i in finalState:
             if i != "2":
                 break
     else:
         goods.add(state)
-        break
     
     for i in range(len(finalState)):
         # print(len(finalState) == len(bulbState))
@@ -115,8 +101,8 @@ for i in goods:
     answers.append(i)
 
 answers.sort()
-for i in answers:
-    print(i)
+# for i in answers:
+#     print(i)
 with open("lamps.out", "w") as f:
     if len(answers) == 0:
         f.write("IMPOSSIBLE\n")
