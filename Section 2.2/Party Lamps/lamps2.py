@@ -12,7 +12,7 @@ finalC = 0
 c = 0
 bulbs = ""
 finalState = []
-with open("lamps.in", "r") as f:
+with open("lamps3.in", "r") as f:
     N = int(f.readline())
     finalC = int(f.readline())
     on = f.readline().split()
@@ -63,10 +63,12 @@ def button4(s):
             b4 += s[i]
     return b4
 
+previousList = {}
 currentList = {bulbs}
 # fullList = [bulbs]
 # print("Started bfs")
 for c in range(finalC):
+    previousList = currentList.copy()
     temp = set([])
     # bemp = []
     for i in currentList:
@@ -78,6 +80,9 @@ for c in range(finalC):
         # bemp.append(button2(i))
         # bemp.append(button3(i))
         # bemp.append(button4(i))
+    if len(previousList - temp) == 0:
+        break
+
     currentList = temp
     # print(len(currentList), end="\t")
     # fullList = bemp
@@ -110,8 +115,8 @@ for i in goods:
     answers.append(i)
 
 answers.sort()
-# for i in answers:
-#     print(i)
+for i in answers:
+    print(i)
 with open("lamps.out", "w") as f:
     if len(answers) == 0:
         f.write("IMPOSSIBLE\n")
