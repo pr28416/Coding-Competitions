@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - prefix",
+            "request": "launch",
+            "mainClass": "prefix",
+            "projectName": "USACO_a3fce133"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch)-lamps<USACO_a3fce133>",
             "request": "launch",
             "mainClass": "lamps",
