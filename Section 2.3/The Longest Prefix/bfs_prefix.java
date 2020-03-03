@@ -20,7 +20,7 @@ class bfs_prefix {
          * BFS span
          */
 
-         BufferedReader reader = new BufferedReader(new FileReader(new File("prefix2.in")));
+         BufferedReader reader = new BufferedReader(new FileReader(new File("prefix.in")));
          PrintWriter writer = new PrintWriter(new File("prefix.out"));
 
          String feed = reader.readLine();
@@ -44,13 +44,16 @@ class bfs_prefix {
 
          // Span out
          span();
+         writer.println(answer);
+         reader.close();
+         writer.close();
     }
 
     public static void span() {
         HashSet<String> possibleSequences = new HashSet<String>();
         possibleSequences.add(sequence);
         while (true) {
-            System.out.println(possibleSequences.size());
+            // System.out.println(possibleSequences.size());
             HashSet<String> temp = new HashSet<String>();
             for (String seq: possibleSequences) {
                 for (String prim: getPrimitivesForSequence(seq)) {
@@ -68,7 +71,7 @@ class bfs_prefix {
                 answer = sequence.length()-seq.length();
             }
         }
-        System.out.println(answer);
+        // System.out.println(answer);
     }
 
     public static Set<String> getPrimitivesForSequence(String seq) {
