@@ -13,7 +13,7 @@ class prefix {
     static Set<Integer> answers = new HashSet<Integer>();
     static String seq = "";
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix2.in")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix.in")));
         PrintWriter writer = new PrintWriter(new File("prefix.out"));
 
         
@@ -36,38 +36,43 @@ class prefix {
 
 
         span(seq, 0);
+        // for (String p: primitives) {
+        //     System.out.println(canUsePrimitive(p, seq, 5));
+        // }
 
-        int l = 0;
-        for (int i: answers) {
-            if (i > l) {
-                l = i;
-            }
-        }
+        // int l = 0;
+        // for (int i: answers) {
+        //     if (i > l) {
+        //         l = i;
+        //     }
+        // }
 
+        // System.out.println("Answers: "+answers);
         
-
-        System.out.println("Answers: "+answers);
-        
-        writer.println(l);
+        // writer.println(largest);
         writer.close();
     }
 
+    // static int largest = 0;
+
     public static void span(String sequence, int idx) {
+        System.out.println(sequence.substring(idx)+"\t"+idx);
         for (String prim: primitives) {
-            if (canUsePrimitive(prim, sequence.substring(idx))) {
+            if (canUsePrimitive(prim, sequence, idx)) {
                 span(sequence, prim.length());
             } else {
                 answers.add(seq.length()-sequence.length());
+                System.out.println("adding");
             }
         }
     }
 
-    public static boolean canUsePrimitive(String primitive, String sequence) {
-        if (primitive.length() > sequence.length()) {
+    public static boolean canUsePrimitive(String primitive, String sequence, int idx) {
+        if (primitive.length() > (sequence.length()-idx)) {
             return false;
         }
         for (int i = 0; i < primitive.length(); i++) {
-            if (!primitive.substring(i, i+1).equals(sequence.substring(i, i+1))) {
+            if (!primitive.substring(i, i+1).equals(sequence.substring(i+idx, i+1+idx))) {
                 return false;
             }
         }
