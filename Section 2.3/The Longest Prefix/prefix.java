@@ -18,7 +18,7 @@ class prefix {
          * Read prefix.in Get the list of primitives Get the full sequence BFS span
          */
         // System.out.println("start");
-        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix.in")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix2.in")));
         PrintWriter writer = new PrintWriter(new File("prefix.out"));
 
         String feed = reader.readLine();
@@ -49,55 +49,90 @@ class prefix {
     }
 
     public static void span() {
-        HashSet<String> possibleSequences = new HashSet<String>();
-        // String mySeq = "";
-        possibleSequences.add(sequence);
+        HashSet<String> seqUsed = new HashSet<String>();
+        seqUsed.add("");
         while (true) {
-            // System.out.println(possibleSequences.size());
             HashSet<String> temp = new HashSet<String>();
-            for (String seq : possibleSequences) {
-                // for (String prim : getPrimitivesForSequence(seq)) {
-                // temp.add(seq.substring(prim.length()));
-                // }
-                for (String prim : primitives) {
-                    if (prim.length() <= seq.length()) {
-                        if (seq.substring(0, prim.length()).equals(prim)) {
-                            // h.add(prim);
-                            temp.add(seq.substring(prim.length()));
-                        }
+            System.out.println(seqUsed.size());
+            boolean b = true;
+            for (String seq: seqUsed) {
+                for (String prim: primitives) {
+                    if (seq.length() + prim.length() <= sequence.length() &&
+                    (seq+prim).equals(sequence.substring(0, seq.length()+prim.length()))) {
+                        // System.out.println("adding "+prim+" to "+seq+" ==> "+seq+prim);
+                        temp.add(seq+prim);
+                        b = false;
                     }
                 }
             }
-            if (temp.size() == 0) {
-                break;
+            
+            
+            if (b) {
+                int l = 0;
+                for (String t: seqUsed) {
+                    if (t.length() > l) {
+                        l = t.length();
+                    }
+                }
+                // System.out.println(l);
+                answer = l;
+                return;
             } else {
-                possibleSequences = temp;
+                seqUsed = temp;
             }
-            // System.out.println(mySeq);
-
-            // String primUsed = "";
-
-            // for (String prim: primitives) {
-            // if (mySeq.length() + prim.length() <= sequence.length() &&
-            // (mySeq+prim).equals(sequence.substring(0, mySeq.length()+prim.length())) &&
-            // prim.length() > primUsed.length()) {
-            // primUsed = prim;
-            // }
-            // }
-            // if (mySeq.equals(mySeq+primUsed)) {
-            // answer = mySeq.length();
-            // break;
-            // } else {
-            // mySeq += primUsed;
-            // }
-            // }
-            // for (String seq : possibleSequences) {
-            // if (sequence.length() - seq.length() > answer) {
-            // answer = sequence.length() - seq.length();
-            // }
-            // }
-
         }
     }
+
+    // public static void span() {
+    //     HashSet<String> possibleSequences = new HashSet<String>();
+    //     // String mySeq = "";
+    //     possibleSequences.add(sequence);
+    //     while (true) {
+    //         // System.out.println(possibleSequences.size());
+    //         HashSet<String> temp = new HashSet<String>();
+    //         for (String seq : possibleSequences) {
+    //             // for (String prim : getPrimitivesForSequence(seq)) {
+    //             // temp.add(seq.substring(prim.length()));
+    //             // }
+    //             for (String prim : primitives) {
+    //                 if (prim.length() <= seq.length()) {
+    //                     if (seq.substring(0, prim.length()).equals(prim)) {
+    //                         // h.add(prim);
+    //                         temp.add(seq.substring(prim.length()));
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         if (temp.size() == 0) {
+    //             break;
+    //         } else {
+    //             possibleSequences = temp;
+    //         }
+    //         // System.out.println(mySeq);
+
+    //         // String primUsed = "";
+
+    //         // for (String prim: primitives) {
+    //         // if (mySeq.length() + prim.length() <= sequence.length() &&
+    //         // (mySeq+prim).equals(sequence.substring(0, mySeq.length()+prim.length())) &&
+    //         // prim.length() > primUsed.length()) {
+    //         // primUsed = prim;
+    //         // }
+    //         // }
+    //         // if (mySeq.equals(mySeq+primUsed)) {
+    //         // answer = mySeq.length();
+    //         // break;
+    //         // } else {
+    //         // mySeq += primUsed;
+    //         // }
+    //         // }
+    //         // for (String seq : possibleSequences) {
+    //         // if (sequence.length() - seq.length() > answer) {
+    //         // answer = sequence.length() - seq.length();
+    //         // }
+    //         // }
+
+    //     }
+    // }
 
 }
