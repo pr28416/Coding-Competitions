@@ -8,70 +8,87 @@ import java.util.*;
 import java.io.*;
 
 class bfs_prefix {
-    static ArrayList<String> primitives = new ArrayList<String>();
+
+    static List<String> primitives = new ArrayList<String>();
     static String sequence = "";
+    static int answer = 0;
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix2.in")));
-        PrintWriter writer = new PrintWriter(new File("prefix.out"));
+        /**
+         * Read prefix.in
+         * Get the list of primitives
+         * Get the full sequence
+         * BFS span
+         */
 
-        
-        String input = reader.readLine();
-        while (!input.equals(".")) {
-            String[] temp = input.split(" ");
-            for (String i: temp) {
-                primitives.add(i);
-            }
-            input = reader.readLine();
-        }
-        while (input != null) {
-            if (!input.equals(".")) sequence += input;
-            input = reader.readLine();
-        }
-        reader.close();
+         BufferedReader reader = new BufferedReader(new FileReader(new File("prefix.in")));
+         PrintWriter writer = new PrintWriter(new File("prefix.out"));
 
-        System.out.println(primitives);
-        System.out.println(sequence);
+         String feed = reader.readLine();
 
-        bfs_span();
+         // Add all the primitives
+         
+         while (!feed.equals(".")) {
+             String[] temp = feed.split(" ");
+             for (String t: temp) {
+                primitives.add(t);
+             }
+             feed = reader.readLine();
+         }
+         feed = reader.readLine();
 
-        System.out.println(updated);
+         // Concatenate the rest of the file into the sequence
+         while (feed != null) {
+             sequence += feed;
+             feed = reader.readLine();
+         }
+
+         // Span out
+         span();
+         writer.println(answer);
+         reader.close();
+         writer.close();
     }
 
-    static Set<String> updated = new HashSet<String>();
-
-    public static void bfs_span() {
-        updated.add(sequence);
-        int i = 0;
+    public static void span() {
+        HashSet<String> possibleSequences = new HashSet<String>();
+        possibleSequences.add(sequence);
         while (true) {
-            System.out.println(i+"\t");
-            Set<String> temp = new HashSet<String>();
-            for (String seq: updated) {
-                for (String prim: primitives) {
-                    if (canUsePrimitive(prim, seq)) {
-                        temp.add(seq.substring(prim.length()));
-                        // System.out.println("\tAdding " + seq.substring(prim.length()));
-                    }
+            // System.out.println(possibleSequences.size());
+            HashSet<String> temp = new HashSet<String>();
+            for (String seq: possibleSequences) {
+                for (String prim: getPrimitivesForSequence(seq)) {
+                    temp.add(seq.substring(prim.length()));
                 }
             }
-            if (updated.containsAll(temp)) {
-                // System.out.println("break");
-                return;
+            if (temp.size() == 0) {
+                break;
+            } else {
+                possibleSequences = temp;
             }
-            updated = temp;
-            // System.out.println(temp);
-            i++;
         }
+        for (String seq: possibleSequences) {
+            if (sequence.length()-seq.length() > answer) {
+                answer = sequence.length()-seq.length();
+            }
+        }
+        // System.out.println(answer);
     }
 
-    public static boolean canUsePrimitive(String primitive, String sequence) {
-        if (primitive.length() > sequence.length()) {
-            return false;
-        }
-        for (int i = 0; i < primitive.length(); i++) {
-            if (!primitive.substring(i, i+1).equals(sequence.substring(i, i+1))) {
-                return false;
+    public static Set<String> getPrimitivesForSequence(String seq) {
+        Set<String> h = new HashSet<>();
+        for (String prim: primitives) {
+            if (prim.length() <= seq.length()) {
+                boolean b = true;
+                for (int i = 0; i < prim.length(); i++) {
+                    if (!seq.substring(i, i+1).equals(prim.substring(i, i+1))) {
+                        b = false; break;
+                    }
+                }
+                if (b) {
+                    h.add(prim);
+                }
             }
         }
-        return true;
+        return h;
     }
 }
