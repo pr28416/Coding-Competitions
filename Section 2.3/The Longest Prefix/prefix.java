@@ -10,85 +10,87 @@ import java.io.*;
 class prefix {
 
     static List<String> primitives = new ArrayList<String>();
-    static String sequence = "";
+    static char[] sequence;
+    static char[] newSeq;
     static int answer = 0;
+
     public static void main(String[] args) throws IOException {
-        /**
-         * Read prefix.in
-         * Get the list of primitives
-         * Get the full sequence
-         * BFS span
-         */
 
-         BufferedReader reader = new BufferedReader(new FileReader(new File("prefix.in")));
-         PrintWriter writer = new PrintWriter(new File("prefix.out"));
+        
 
-         String feed = reader.readLine();
+        BufferedReader reader = new BufferedReader(new FileReader(new File("prefix2.in")));
+        PrintWriter writer = new PrintWriter(new File("prefix.out"));
 
-         // Add all the primitives
-         
-         while (!feed.equals(".")) {
-             String[] temp = feed.split(" ");
-             for (String t: temp) {
+        String feed = reader.readLine();
+
+        // Add all the primitives
+
+        while (!feed.equals(".")) {
+            String[] temp = feed.split(" ");
+            for (String t : temp) {
                 primitives.add(t);
-             }
-             feed = reader.readLine();
-         }
-         feed = reader.readLine();
+            }
+            feed = reader.readLine();
+        }
+        feed = reader.readLine();
 
-         // Concatenate the rest of the file into the sequence
-         while (feed != null) {
-             sequence += feed;
-             feed = reader.readLine();
-         }
+        String seq = "";
+        // Concatenate the rest of the file into the sequence
+        while (feed != null) {
+            seq += feed;
+            feed = reader.readLine();
+        }
+        // System.out.println(seq);
+        sequence = new char[seq.length()];
+        newSeq = new char[seq.length()];
+        Arrays.fill(newSeq, ' ');
+        for (int i = 0; i < seq.length(); i++) {
+            sequence[i] = seq.charAt(i);
+        }
+        // for (char c: sequence) {
+        // System.out.print(c+" ");
+        // }
+        // System.out.println();
+        // System.out.println("done");
+        
+        // Span out
+        span();
+        writer.println(answer);
+        reader.close();
+        writer.close();
 
-         // Span out
-         span();
-         writer.println(answer);
-         reader.close();
-         writer.close();
+        
     }
 
     public static void span() {
-        HashSet<String> possibleSequences = new HashSet<String>();
-        possibleSequences.add(sequence);
-        while (true) {
-            // System.out.println(possibleSequences.size());
-            HashSet<String> temp = new HashSet<String>();
-            for (String seq: possibleSequences) {
-                for (String prim: getPrimitivesForSequence(seq)) {
-                    temp.add(seq.substring(prim.length()));
-                }
-            }
-            if (temp.size() == 0) {
-                break;
-            } else {
-                possibleSequences = temp;
-            }
-        }
-        for (String seq: possibleSequences) {
-            if (sequence.length()-seq.length() > answer) {
-                answer = sequence.length()-seq.length();
-            }
-        }
-        // System.out.println(answer);
-    }
-
-    public static Set<String> getPrimitivesForSequence(String seq) {
-        Set<String> h = new HashSet<>();
-        for (String prim: primitives) {
-            if (prim.length() <= seq.length()) {
-                boolean b = true;
-                for (int i = 0; i < prim.length(); i++) {
-                    if (!seq.substring(i, i+1).equals(prim.substring(i, i+1))) {
-                        b = false; break;
+        long st = System.nanoTime();
+        for (String prim : primitives) { // Worst case: 200 steps
+            for (int i = 0; i < sequence.length - prim.length() + 1; i++) { // Worst case: 200,000 steps
+                if (equalSequences(i, i + prim.length(), prim)) { // Worst case: 10 steps
+                    for (int j = i; j < i + prim.length(); j++) { // Worst case: 10 steps
+                        newSeq[j] = prim.charAt(j - i);
                     }
                 }
-                if (b) {
-                    h.add(prim);
-                }
             }
         }
-        return h;
+        int l = 0;
+        for (char c : newSeq) { // Worst case: 200,000 steps
+            if (c == ' ')
+                break;
+            l++;
+        }
+        // System.out.println(l);
+        answer = l;
+        long en = System.nanoTime();
+        System.out.println(String.format("Took %.7f seconds", (double) (en - st) / 100000000));
+    }
+
+    public static boolean equalSequences(int lo, int up, String prim) { // Worst case: 10 steps
+        for (int i = lo; i < up; i++) {
+            if (sequence[i] != prim.charAt(i - lo)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
