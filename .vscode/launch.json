@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - nocows",
+            "request": "launch",
+            "mainClass": "nocows",
+            "projectName": "USACO_3003f9d9"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - bfs_prefix",
             "request": "launch",
             "mainClass": "bfs_prefix",
