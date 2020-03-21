@@ -9,30 +9,15 @@ import java.util.*;
 
 class nocows {
 
-    // static class Node {
-    //     int height = 1; // Max height: K
-    //     boolean isMainThread;
-    //     Node parent;
-    //     ArrayList<Node> children;
-    //     public Node(Node parent, boolean isMainThread) {
-    //         this.isMainThread = isMainThread;
-    //         this.parent = parent;
-    //         if (parent != null) {
-    //             this.height = parent.height+1;
-    //         }
-    //         children = new ArrayList<Node>(2);
-    //     }
-    // }
-
-    static class SquareNode {
-        SquareNode left, right;
+    static class Node {
+        Node left, right;
         int height;
 
-        public SquareNode(SquareNode parent) {
+        public Node(Node parent) {
             height = parent.height+1;
         }
 
-        public SquareNode() {
+        public Node() {
             height = 2;
         }
     }
@@ -40,7 +25,7 @@ class nocows {
     // 3 <= N < 200
     // 1 < K < 100
     static int N, K;
-    static SquareNode[] treeChain;
+    static Node[] treeChain;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File("nocows.in")));
@@ -49,95 +34,95 @@ class nocows {
         K = Integer.parseInt(c[1]);
         System.out.println(String.format("N: %d, K: %d", N, K));
         // Create initial tree chain with specified height
-        treeChain = new SquareNode[K-1];
+        treeChain = new Node[K-1];
         for (int i = 0; i < treeChain.length; i++) {
             if (i == 0) {
-                treeChain[i] = new SquareNode();
+                treeChain[i] = new Node();
             } else {
-                treeChain[i] = new SquareNode(treeChain[i-1]);
+                treeChain[i] = new Node(treeChain[i-1]);
             }
         }
 
-        for (SquareNode i: treeChain) {
+        for (Node i: treeChain) {
             System.out.println(i.height + "\tnch");
         }
         reader.close();
         // fill(treeChain, treeChain.length);
-        ArrayList<SquareNode> allNodes = new ArrayList<SquareNode>();
-        allNodes.add(new SquareNode());
-        span(allNodes, 2);
-        System.out.println("total: "+total);
-        System.out.println("set size: "+set.size());
+        ArrayList<Node> allNodes = new ArrayList<Node>();
+        allNodes.add(new Node());
+        span(allNodes);
+        // System.out.println("total: "+total);
+        System.out.println(String.format("Set size: %s, total: %s", set.size(), total));
+
     }
     static int total = 0;
     static Set<StringBuilder> set = new HashSet<StringBuilder>();
+    static Set<ArrayList<Node>> used = new HashSet<ArrayList<Node>>();
 
-    public static void span(ArrayList<SquareNode> allNodes, int maxHeight) {
-        System.out.println(String.format("numSquares: %s, numSquares*2+1: %s", allNodes.size(), allNodes.size()*2+1));
-        if (allNodes.size()*2+1 == N) {
-            if (maxHeight == K) {
-                StringBuilder i = new StringBuilder();
-                for (SquareNode node: allNodes) {
-                    i.append((char)node.height);
-                }
-                set.add(i);
-                System.out.println("break");
-                total++;
-                return;
-            } else {
-                System.out.println("failed");
+    public static void span(ArrayList<Node> nodes) {
+        if (used.contains(nodes)) return;
+        used.add(nodes);
+        if (nodes.size()*2+1 == N) {
+            // Check for max height
+            int height = 0;
+            for (Node node: nodes) if (node.height > height) height = node.height;
+
+            if (height != K) {
+                System.out.println("nope " + height);
                 return;
             }
-            
+            System.out.println("found");
+            total++;
+            set.add(preorder(nodes.get(0), new StringBuilder()));
+            return;
         } else {
-            for (int i = 0; i < allNodes.size(); i++) {
-                if (allNodes.get(i).height < K) {
-                    // Assign left if possible
-                    if (allNodes.get(i).left == null) {
-                        allNodes.get(i).left = new SquareNode(allNodes.get(i));
-                        allNodes.add(allNodes.get(i).left);
-                        if (allNodes.get(i).left.height > maxHeight) span(allNodes, allNodes.get(i).left.height);
-                        else span(allNodes, maxHeight);
-                        allNodes.remove(allNodes.size()-1);
-                        allNodes.get(i).left = null;
-                    }
-                    // Assign right if possible
-                    if (allNodes.get(i).right == null) {
-                        allNodes.get(i).right = new SquareNode(allNodes.get(i));
-                        allNodes.add(allNodes.get(i).right);
-                        if (allNodes.get(i).right.height > maxHeight) span(allNodes, allNodes.get(i).right.height);
-                        else span(allNodes, maxHeight);
-                        allNodes.remove(allNodes.size()-1);
-                        allNodes.get(i).right = null;
-                    }
+            // Iterate through all nodes and check if a node can be added
+            for (int i = 0; i < nodes.size(); i++) {
+                // Make sure height is not K
+                if (nodes.get(i).height == K) {
+                    System.out.println("node height was K, skip");
+                    continue;
+                }
+                if (nodes.get(i).left != null && nodes.get(i).right != null) {
+                    System.out.println("X: Node filled " + nodes.get(i).height);
+                }
+
+                // See if left node can be added
+                if (nodes.get(i).left == null) {
+                    nodes.get(i).left = new Node(nodes.get(i));
+                    nodes.add(nodes.get(i).left);
+                    System.out.println("O: Added left node "+nodes.get(i).left.height);
+                    span(nodes);
+                    nodes.get(i).left = null;
+                    nodes.remove(i+1);
+                }
+                
+
+                // See if right node can be added
+                if (nodes.get(i).right == null) {
+                    nodes.get(i).right = new Node(nodes.get(i));
+                    nodes.add(nodes.get(i).right);
+                    System.out.println("O: Added right node "+nodes.get(i).right.height);
+                    span(nodes);
+                    nodes.get(i).right = null;
+                    nodes.remove(i+1);
                 }
             }
             return;
         }
     }
 
-
-    // public static void fill(SquareNode[] nodeList, int numSquares) {
-    //     if (numSquares*2+1 == N) {
-    //         total++;
-    //     } else if (numSquares*2+1 < N) {
-    //         for (int i = 0; i < nodeList.length; i++) {
-    //             // Make right node
-    //             if (nodeList[i].height < K && nodeList[i].right == null) {
-    //                 SquareNode temp = nodeList[i];
-    //                 nodeList[i] = new SquareNode(temp);
-    //                 fill(nodeList, numSquares + 1);
-    //                 nodeList[i] = temp;
-    //             }
-    //             // Make down node
-    //             if (nodeList[i].height < K && nodeList[i].down == null) {
-    //                 SquareNode temp = nodeList[i];
-    //                 nodeList[i] = new SquareNode(temp);
-    //                 fill(nodeList, numSquares + 1);
-    //                 nodeList[i] = temp;
-    //             }
-    //         }
-    //     }
-    // }
+    public static StringBuilder preorder(Node node, StringBuilder s) {
+        // Root left right
+        if (node == null) {
+            return s;
+        }
+        s.append(node.height);
+        s = preorder(node.left, s);
+        s = preorder(node.right, s);
+        // s.append(preorder(node.left, s));
+        // s.append(preorder(node.right, s));
+        return s;
+    }
 
 }
