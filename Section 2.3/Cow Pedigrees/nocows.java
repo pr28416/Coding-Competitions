@@ -12,117 +12,107 @@ class nocows {
     static class Node {
         Node left, right;
         int height;
+        String path;
+        int numNodesOnPath;
 
-        public Node(Node parent) {
+        // Child node
+        public Node(Node parent, char direction, int numNodesAdded) {
             height = parent.height+1;
+            path = parent.path + direction;
+            numNodesOnPath = parent.numNodesOnPath+numNodesAdded;
         }
 
+        // Root node
         public Node() {
             height = 2;
+            path = "V";
+            numNodesOnPath = 1;
+        }
+
+        // This constructor is for copying a node's attributes to another.
+        public Node(Node node) {
+            this.left = node.left;
+            this.right = node.right;
+            this.height = node.height;
+            this.path = node.path;
+            this.numNodesOnPath = node.numNodesOnPath;
+        }
+
+        // String representation
+        public String toString() {
+            return ""+height+path;
         }
     }
-
-    // 3 <= N < 200
-    // 1 < K < 100
-    static int N, K;
-    static Node[] treeChain;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File("nocows.in")));
         String[] c = reader.readLine().split(" ");
-        N = Integer.parseInt(c[0]);
-        K = Integer.parseInt(c[1]);
+        int N = Integer.parseInt(c[0]);
+        int K = Integer.parseInt(c[1]);
         System.out.println(String.format("N: %d, K: %d", N, K));
-        // Create initial tree chain with specified height
-        treeChain = new Node[K-1];
-        for (int i = 0; i < treeChain.length; i++) {
-            if (i == 0) {
-                treeChain[i] = new Node();
-            } else {
-                treeChain[i] = new Node(treeChain[i-1]);
-            }
-        }
-
-        for (Node i: treeChain) {
-            System.out.println(i.height + "\tnch");
-        }
         reader.close();
-        // fill(treeChain, treeChain.length);
-        ArrayList<Node> allNodes = new ArrayList<Node>();
-        allNodes.add(new Node());
-        span(allNodes);
-        // System.out.println("total: "+total);
-        System.out.println(String.format("Set size: %s, total: %s", set.size(), total));
 
+        int answer = span((N-1)/2, K-1);
+        System.out.println("Answer: " + answer);
     }
     static int total = 0;
-    static Set<StringBuilder> set = new HashSet<StringBuilder>();
-    static Set<ArrayList<Node>> used = new HashSet<ArrayList<Node>>();
+    static Set<String> set = new HashSet<String>();
+    static Set<ArrayList<String>> lists = new HashSet<>();
 
-    public static void span(ArrayList<Node> nodes) {
-        if (used.contains(nodes)) return;
-        used.add(nodes);
-        if (nodes.size()*2+1 == N) {
-            // Check for max height
-            int height = 0;
-            for (Node node: nodes) if (node.height > height) height = node.height;
+    public static int span(int N, int K) {
 
-            if (height != K) {
-                System.out.println("nope " + height);
-                return;
+        // Create the dp
+        int[][] dp = new int[N+1][K+1];
+
+        // Pre-populate
+        for (int i = 1; i < N+1 && i < K+1; i++) {
+            dp[i][i] = (int)Math.pow(2, i-1);
+        }
+
+        // Print dp
+        System.out.println("Before");
+        for (int[] n: dp) {
+            for (int k: n) {
+                System.out.print(k+"\t");
             }
-            System.out.println("found");
-            total++;
-            set.add(preorder(nodes.get(0), new StringBuilder()));
-            return;
-        } else {
-            // Iterate through all nodes and check if a node can be added
-            for (int i = 0; i < nodes.size(); i++) {
-                // Make sure height is not K
-                if (nodes.get(i).height == K) {
-                    System.out.println("node height was K, skip");
-                    continue;
-                }
-                if (nodes.get(i).left != null && nodes.get(i).right != null) {
-                    System.out.println("X: Node filled " + nodes.get(i).height);
+            System.out.println();
+        }
+
+        // Iterate through every element
+
+        for (int k = 1; k < K+1; k++) {
+            for (int n = k+1; n < N+1; n++) {
+                // Set the value based on previous row
+
+                int val = 0;
+
+                for (int j = 0; j <= k; j++) {
+                    val += dp[n-1][j]*(int)Math.pow(2, n-j);
                 }
 
-                // See if left node can be added
-                if (nodes.get(i).left == null) {
-                    nodes.get(i).left = new Node(nodes.get(i));
-                    nodes.add(nodes.get(i).left);
-                    System.out.println("O: Added left node "+nodes.get(i).left.height);
-                    span(nodes);
-                    nodes.get(i).left = null;
-                    nodes.remove(i+1);
-                }
-                
+                dp[n][k] = val/2;
 
-                // See if right node can be added
-                if (nodes.get(i).right == null) {
-                    nodes.get(i).right = new Node(nodes.get(i));
-                    nodes.add(nodes.get(i).right);
-                    System.out.println("O: Added right node "+nodes.get(i).right.height);
-                    span(nodes);
-                    nodes.get(i).right = null;
-                    nodes.remove(i+1);
+
+                if (val/2 == 1 && val/2 == 0) {
+                    break;
                 }
             }
-            return;
+            
         }
-    }
+        
+        System.out.println("After");
+        // Print dp
+        for (int[] n: dp) {
+            for (int k: n) {
+                System.out.print(k+"\t");
+            }
+            System.out.println();
+        }
 
-    public static StringBuilder preorder(Node node, StringBuilder s) {
-        // Root left right
-        if (node == null) {
-            return s;
+        for (int i = K; i >= 0; i--) {
+            if (dp[N][i] != 0) return dp[N][i];
         }
-        s.append(node.height);
-        s = preorder(node.left, s);
-        s = preorder(node.right, s);
-        // s.append(preorder(node.left, s));
-        // s.append(preorder(node.right, s));
-        return s;
+        return dp[N][K];
     }
 
 }
