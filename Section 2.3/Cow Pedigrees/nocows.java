@@ -69,6 +69,8 @@ class nocows {
             dp[i][i] = (int)Math.pow(2, i-1);
         }
 
+        dp[0][0] = 1;
+
         // Print dp
         System.out.println("Before");
         for (int[] n: dp) {
@@ -82,20 +84,51 @@ class nocows {
 
         for (int k = 1; k < K+1; k++) {
             for (int n = k+1; n < N+1; n++) {
-                // Set the value based on previous row
+                // Currently at single item
 
-                int val = 0;
+                if (dp[n-1][k] == 1) break;
 
-                for (int j = 0; j <= k; j++) {
-                    val += dp[n-1][j]*(int)Math.pow(2, n-j);
+                int[] s = new int[n];
+                for (int i = 0; i < s.length; i++) {
+                    // Check row i vs row n-i
+                    // Iterate through top
+                    // Iterate through bottom
+                    int a = 0;
+                    // if (dp[i][k-1] != 0) {
+                    for (int j = k-1; j >= 0; j--) {
+                        // if (dp[i][j] == 0) break;
+                        // System.out.println(String.format("i: %s, j: %s, k-1: %s, dp[i][j]: %s, dp[i][k-1]: %s, prod: %s", i, j, k-1, dp[i][j], dp[i][k-1], dp[i][j]*dp[i][k-1]));
+                        for (int l = k-1; l >= 0; l--) {
+                            a += dp[n-i][j]*dp[i][l];
+                        }
+                        
+                    }
+                    // }
+                    if (n == 4 && k == 3) System.out.println(a);
+                    s[i] = a;
+                    // if (dp[n][n-i] != 0) {
+                    //     for (int j = n-i; j >= 0; j--) {
+                    //         if (dp[n][j] == 0) break;
+                    //         a += dp[n][n-i]*dp[n][j];
+                    //     }
+                    // }
                 }
-
-                dp[n][k] = val/2;
-
-
-                if (val/2 == 1 && val/2 == 0) {
-                    break;
+                int b = 0;
+                for (int i = 0; i < s.length; i++) {
+                    b += s[i];
                 }
+                // if (n % 2 == 0) {
+                //     for (int i = 0; i < s.length; i++) {
+                //         b += s[i];
+                //     }
+                //     b *= 2;
+                // } else {
+                //     for (int i = 0; i < s.length-1; i++) {
+                //         b += s[i];
+                //     }
+                //     b = b * 2 + s[s.length-1];
+                // }
+                dp[n][k] = b;
             }
             
         }
