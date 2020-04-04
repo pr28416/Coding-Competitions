@@ -1,8 +1,8 @@
 # T: # Test cases
 T = int(input())
 
-
-def test(S):
+# Splits first string into individual groups
+def splitIntoParts(S):
     # Arrange into groups
     arr = [S[0]]
     for i in range(1, len(S)):
@@ -10,66 +10,116 @@ def test(S):
             arr[len(arr)-1] += S[i]
         else:
             arr.append(S[i])
-    print(arr)
 
-    usedIdx = set()
-    curSmallest = 0
+    return arr
 
-    # modifiedArr will contain the parentheses
-    modifiedArr = [i for i in arr]
-    numTimes = 0
-    while numTimes < len(arr):
-        # print("Still running: ")
-        # Get smallest
-        smallIdx = 0
-        for i in range(len(arr)):
-            if int(arr[i][0]) <= int(arr[smallIdx][0]) and i not in usedIdx:
-                smallIdx = i
-        
-        usedIdx.add(smallIdx)
-        
-        # Span from smallest to see where parentheses can go
-        # leftParIdx is on left of index, rightParIdx is on right of index
-        leftParIdx, rightParIdx = smallIdx, smallIdx
-        lowerBound, upperBound = 
-        # Span leftParIdx
-        while leftParIdx >= 0:
-            if int(arr[leftParIdx][0]) >= int(arr[smallIdx][0]):
-                if leftParIdx == 0:
-                    break
-                leftParIdx -= 1
-            else:
-                break
-        
-        # Span rightParIdx
-        while rightParIdx <= len(arr):
-            if int(arr[rightParIdx][0]) >= int(arr[smallIdx][0]):
-                if rightParIdx == len(arr)-1:
-                    break
-                rightParIdx += 1
-            else:
-                break
+# Gets all nonzero subarrays in an array
+def getSubarrays(arr):
+    # Make sure arr length is not
+    assert len(arr) != 0
 
-        # Insert parentheses
-        print("smallestIdx: %s, smallest: %s, leftParIdx: %s, rightParIdx: %s" % (smallIdx, arr[smallIdx], leftParIdx, rightParIdx+1))
-        modifiedArr.insert(rightParIdx+1, ")")
-        modifiedArr.insert(leftParIdx, "(")
-        print(modifiedArr)
-        print("".join(modifiedArr))
-        print()
-        numTimes += 1
-        
+    # Break into subarrays
+    r = [[arr[0]]]
+    if arr[0] == 0:
+        r.append([])
+    for i in range(1, len(arr)):
+        if arr[i] == 0:
+            r.append([0])
+            if i != len(arr)-1:
+                r.append([])
+        else:
+            r[len(r)-1].append(arr[i])
     
-    return "".join(modifiedArr)
+    if len(r[len(r)-1]) == 0:
+        del r[len(r)-1]
+
+    return r
+
+# Subtracts n from every single element in array
+def subtractFromAll(arr, n):
+    for i in range(len(arr)):
+        arr[i] -= n
+
+# Checks if all elements are 0
+def containsOnlyZeros(arr):
+    for i in arr:
+        if i != 0:
+            return False
+    return True
 
 
+# def test(S)
+    
+# Main recursion function
+def recursionFunc(arr, depth):
+    # print("\n"+" "*depth+"starting with %s" % arr)
+    
+    if containsOnlyZeros(arr):
+        # print(" "*depth+"contained only zeros")
+        # for i in range(len(arr)):
+        #     arr[i] += 1
+        return arr
+
+    # 1: Subtract 1 from all
+    subtractFromAll(arr, 1)
+    # print(" "*depth+"subtracting to %s" % arr)
+    # 2: Get subarrays
+    subarr = getSubarrays(arr)
+    # print(" "*depth+"extracting subarrays: %s" % subarr)
+    # 3: For each subarray, recurse through and replace spot
+    for i in range(len(subarr)):
+        # print(" "*depth+"subarr %s: %s" % (i, subarr[i]))
+        e = subarr[i]
+        subarr[i] = recursionFunc(subarr[i], depth+1)
+        # print("  "*depth+"returned subarr %s from orig: %s" % (subarr[i], e))
+        # for j in range(len(subarr[i])):
+        #     print("  "*depth+"i", subarr[i])
+        #     print("  "*depth+"j", subarr[i][j])
+        #     subarr[i][j] += 1
+        # print("  "*depth+"added 1 to subarr: %s" % subarr[i])
+
+    for i in range(len(subarr)-1, -1, -1):
+        if len(subarr[i]) == 0:
+            del subarr[i]
+    
+    return subarr
+
+
+def traversionFunc(arr, depth):
+    global newStr
+    if arr == [0]:
+        newStr += str(depth)
+    else:
+        newStr += "("
+        for i in arr:
+            traversionFunc(i, depth+1)
+        
+        newStr += ")"
+
+
+
+
+finalStr = ""
+newStr = ""
 
 for t in range(T):
     # Get input
-    S = input()
 
     # Do something with input
-    res = test(S)
+    data = [int(i) for i in input()]
 
+    e = getSubarrays(data)
+    # print("MAIN SUBARRAYS: %s" % e)
+    finalStr = ""
+    newStr = ""
+    for sub in e:
+        if containsOnlyZeros(sub):
+            finalStr += "0"*len(sub)
+        else:
+            newStr = ""
+            f = recursionFunc(sub, 0)
+            traversionFunc(f, 0)
+            finalStr += newStr
+    
     # Print output
-    print(res)
+    print("Case #%s: %s" % (t+1, finalStr))
