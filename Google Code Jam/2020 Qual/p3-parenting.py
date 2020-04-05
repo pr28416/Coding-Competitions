@@ -53,64 +53,115 @@ def merge2(a, b):
 
     return x
 
-def test(activities):
-    times = split(activities)
-    # print("\nstarting times: %s" % times)
-    c_working_hours = [times.pop(0)]
-    c_working_hours[0].append("C")
-    t = 0
-    while t < len(times):
-        if times[t][0] >= c_working_hours[len(c_working_hours)-1][1]:
-            c_working_hours.append(times.pop(t))
-            c_working_hours[len(c_working_hours)-1].append("C")
-            t -= 1
-        t += 1
 
-    # print("\nTimes after c_working took: %s" % times)
+# Backtracking
+workingSols = set()
+didWork = False
 
-    j_working_hours = []
-    if len(times) != 0:
-        t = 0
-        j_working_hours = [times.pop(0)]
-        j_working_hours[0].append("J")
-        while t < len(times):
-            if times[t][0] >= j_working_hours[len(j_working_hours)-1][1]:
-                j_working_hours.append(times.pop(t))
-                j_working_hours[len(j_working_hours)-1].append("J")
-                t -= 1
-            t += 1
+def recurse(used, sortedTimes, normalTimes):
+    """
+    Algorithm (requires sortedTimes, set of working solutions):
+    - Start with first interval in a list
+    - For every interval from last item in list onwards:
+        - Pick that item and search it
+        - Merge recursion result to set of working solutions
+        - Take the item out
+    - If could not pick an interval, check this solution to see if it works
+    - If solution works, add to set of working solutions
+    """
+    global workingSols
+    didChange = False
+    # print(used)
+    for interval in range(used[len(used)-1]+1, len(sortedTimes)):
+        if sortedTimes[interval][0] >= sortedTimes[used[len(used)-1]][1]:
+            didChange = True
+            used.append(interval)
+            recurse(used, sortedTimes, normalTimes)
+            del used[len(used)-1]
+    
+    if not didChange:
+        e = sortedTimes.copy()
+        for i in range(len(used)-1, -1, -1):
+            del e[used[i]]
+        
+        for i in range(len(e)-1):
+            if e[i][1] > e[i+1][0]:
+                return
 
-    # print("\nC: %s\nJ: %s" % (c_working_hours, j_working_hours))
-    if len(times) > 0:
-        return "IMPOSSIBLE"
+        p1Stuff = {sortedTimes[i] for i in used}
+        fin = ""
+        for i in normalTimes:
+            if i not in p1Stuff:
+                fin += "J"
+            else:
+                fin += "C"
+        workingSols.add(fin)
 
-    sch = []
-    while len(c_working_hours) > 0 and len(j_working_hours) > 0:
-        if c_working_hours[0][0] < j_working_hours[0][0]:
-            sch.append(c_working_hours.pop(0))
+
+def greedy(normalTimes, sortedTimes):
+    maxTime = 0
+    for t in times:
+        if t[1] > maxTime:
+            maxTime = t[1]
+
+    workingTimes = [0 for i in range(maxTime+1)] # 0 --> ending activity's start
+    # print(workingTimes[len(workingTimes)-1])
+    # startTimes = {i[0] for i in times}
+
+    for i in times:
+        for j in range(i[0], i[1]):
+            workingTimes[j] += 1
+
+    for i in workingTimes:
+        if i > 2:
+            return "IMPOSSIBLE"
+    # Add p1 times
+    # print("before:", sortedTimes)
+    p1Times = [sortedTimes.pop()]
+    for i in range(len(sortedTimes)-1, -1, -1):
+        if sortedTimes[i][1] <= p1Times[len(p1Times)-1][0]:
+            p1Times.append(sortedTimes.pop(i))
+
+    # print("after:", sortedTimes)
+    # Verify that p2 times still work
+    for i in range(len(sortedTimes)-1):
+        if sortedTimes[i][1] > sortedTimes[i+1][0]:
+            # return "IMPOSSIBLE"
+            raise Exception("Program determined a possible solution to be impossible. Fix it.")
+
+    d = {}
+    for i in p1Times:
+        d[i] = "C"
+    fin = ""
+    for i in normalTimes:
+        if i not in d.keys():
+            fin += "J"
         else:
-            sch.append(j_working_hours.pop(0))
+            fin += "C"
+    
+    return fin
 
-    while len(c_working_hours) > 0:
-        sch.append(c_working_hours.pop(0))
 
-    while len(j_working_hours) > 0:
-        sch.append(j_working_hours.pop(0))
-
-    sch = split2(sch)
-    # print("\n\nfinal: %s" % sch)
-    e = []
-    for i in sch:
-        e.append(i[3])
-    return "".join(e)
-
+# Run tests
 for t in range(T):
     N = int(input())
     times = []
     for n in range(N):
-        f = [int(i) for i in input().split(" ")]
-        f.append(n)
+        f = tuple(int(i) for i in input().split(" "))
         times.append(f)
 
-    e = test(times)
-    print("Case #%s: %s" % (t+1, e))
+    sortedTimes = split(times)
+    # print(sortedTimes)
+    # # e = test2(times)
+    # test3([0], sortedTimes)
+    # d = {}
+    workingSols = set()
+    recurse([0], sortedTimes, times)
+
+    # print("All solutions: %s" % workingSols)
+
+    ans = "IMPOSSIBLE" if len(workingSols) == 0 else workingSols.pop()
+    
+    print("Case #%s: %s" % (t+1, ans))
+    a = []
+    didWork = False
