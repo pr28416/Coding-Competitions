@@ -5,107 +5,73 @@ TASK: nocows
 */
 
 import java.io.*;
-
 class nocows {
-
     public static void main(String[] args) throws IOException {
+        int N = 0, K = 0;
         BufferedReader reader = new BufferedReader(new FileReader(new File("nocows.in")));
-        String[] c = reader.readLine().split(" ");
-        int N = Integer.parseInt(c[0]);
-        int K = Integer.parseInt(c[1]);
-        System.out.println(String.format("N: %d, K: %d", N, K));
+        PrintWriter writer = new PrintWriter(new File("nocows.out"));
+
+        String[] temp = reader.readLine().split(" ");
         reader.close();
+        N = Integer.parseInt(temp[0]);
+        K = Integer.parseInt(temp[1]);
+        // System.out.println(N + " " + K);
 
-        int answer = span((N-1)/2, K-1);
-        System.out.println("Answer: " + answer);
-    }
+        if (N % 2 == 0) {
+            writer.println(0);
+            writer.close();
+            return;
+        }
 
-    public static int span(int N, int K) {
+        int C = (N-1)/2;
 
-        // Create the dp
-        int[][] dp = new int[N+1][K+1];
-
-        // Pre-populate
-        for (int i = 1; i < N+1 && i < K+1; i++) {
+        int[][] dp = new int[C+1][K+1];
+        dp[0][0] = 1;
+        for (int i = 1; i < C+1 && i < K+1; i++) {
             dp[i][i] = (int)Math.pow(2, i-1);
         }
 
-        dp[0][0] = 1;
+        for (int i = 1; i < K+1 && (int)Math.pow(2, i)-1 < C+1; i++) {
+            dp[(int)Math.pow(2, i)-1][i] = 1;
+        }
 
-        // Print dp
-        for (int[] n: dp) {
-            for (int k: n) {
-                System.out.print(k+"\t");
-            }
+        for (int[] i: dp) {
+            for (int j: i) System.out.print(j+"\t");
             System.out.println();
         }
 
-        // Iterate through every element
-
-        for (int k = 1; k < K+1; k++) {
-            for (int n = k+1; n < N+1; n++) {
-                // Currently at single item
-
-                if (dp[n-1][k] == 1) break;
-
-                int[] s = new int[n];
-                for (int i = 0; i < s.length; i++) {
-                    // Check row i vs row n-i
-                    // Iterate through top
-                    // Iterate through bottom
-                    int a = 0;
-                    // if (dp[i][k-1] != 0) {
-                    for (int j = k-1; j >= 0; j--) {
-                        // if (dp[i][j] == 0) break;
-                        // System.out.println(String.format("i: %s, j: %s, k-1: %s, dp[i][j]: %s, dp[i][k-1]: %s, prod: %s", i, j, k-1, dp[i][j], dp[i][k-1], dp[i][j]*dp[i][k-1]));
-                        for (int l = k-1; l >= 0; l--) {
-                            a += dp[n-i][j]*dp[i][l];
+        for (int i = 1; i < dp.length; i++) {
+            for (int j = 1; j < i; j++) {
+                if (dp[i][j] != 0) continue;
+                // Get all possible left and right subtrees
+                int[] p = new int[i];
+                for (int sub = 0; sub < (i+1)/2; sub++) {
+                    int real = i-1-sub;
+                    // Check left subtree for height
+                    if (dp[real][j-1] != 0) {
+                        int s = 0;
+                        for (int q = 0; q <= j-1; q++) {
+                            s += dp[sub][q];
                         }
-                        
+                        p[sub] = dp[real][j-1]*s;
                     }
-                    // }
-                    if (n == 4 && k == 3) System.out.println(a);
-                    s[i] = a;
-                    // if (dp[n][n-i] != 0) {
-                    //     for (int j = n-i; j >= 0; j--) {
-                    //         if (dp[n][j] == 0) break;
-                    //         a += dp[n][n-i]*dp[n][j];
-                    //     }
-                    // }
                 }
-                int b = 0;
-                for (int i = 0; i < s.length; i++) {
-                    b += s[i];
+                int r = 0;
+                for (int a = p.length-1; a >= 0; a--) {
+                    p[a] = p[p.length-a-1];
+                    r += p[a];
                 }
-                // if (n % 2 == 0) {
-                //     for (int i = 0; i < s.length; i++) {
-                //         b += s[i];
-                //     }
-                //     b *= 2;
-                // } else {
-                //     for (int i = 0; i < s.length-1; i++) {
-                //         b += s[i];
-                //     }
-                //     b = b * 2 + s[s.length-1];
-                // }
-                dp[n][k] = b;
+                dp[i][j] = r;
             }
-            
         }
         
-        System.out.println("After");
-        // Print dp
-        for (int[] n: dp) {
-            for (int k: n) {
-                System.out.print(k+"\t");
-            }
+        System.out.println("\nAfter\n");
+        for (int[] i: dp) {
+            for (int j: i) System.out.print(j+"\t");
             System.out.println();
         }
+        
 
-        for (int i = K; i >= 0; i--) {
-            if (dp[N][i] != 0) return dp[N][i];
-        }
-        return dp[N][K];
+        writer.close();
     }
-
 }
