@@ -5,6 +5,7 @@ TASK: nocows
 */
 
 import java.io.*;
+import java.util.*;
 class nocows {
     public static void main(String[] args) throws IOException {
         int N = 0, K = 0;
@@ -41,7 +42,7 @@ class nocows {
         }
 
         for (int i = 1; i < dp.length; i++) {
-            for (int j = 1; j < i; j++) {
+            for (int j = 1; j < i && j < K+1; j++) {
                 if (dp[i][j] != 0) continue;
                 // Get all possible left and right subtrees
                 int[] p = new int[i];
