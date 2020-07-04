@@ -1,5 +1,5 @@
-N = 0
-times = []
+# N = 0
+# times = []
 
 with open("lifeguards.in", "r") as f:
     N = int(f.readline())
@@ -33,16 +33,37 @@ with open("lifeguards.in", "r") as f:
 maxTime = 0
 
 for i in range(len(times)):
-    remaining = [[*i] for i in [*times[:i], *times[i+1:]]]
-    # print("original times:", *times)
-    # print("\tpre-condensed:", *remaining)
+    remaining = []
+    # METHOD 1
+    # for t in times[:i]:
+    #     temp = []
+    #     for q in t:
+    #         temp.append(q)
+    #     remaining.append(temp)
+    # for t in times[i+1:]:
+    #     temp = []
+    #     for q in t:
+    #         temp.append(q)
+    #     remaining.append(temp)
+    # METHOD @
+    # remaining = []
+    # for j in range(len(times)):
+    #     if j != i:
+    #         temp = []
+    #         for q in times[j]:
+    #             temp.append(q)
+    #         remaining.append(temp)
+    # METHOD 3
+    remaining = [[*times[j]] for j in range(len(times)) if j != i]
+    print("original times:", *times)
+    print("\tpre-condensed:", *remaining)
     # Condense
     for j in range(len(remaining)-1, 0, -1):
         if remaining[j][0] <= remaining[j-1][1]:
             remaining[j-1][1] = remaining[j][1]
             del remaining[j]
     
-    # print("\tcondensed:", *remaining, "\n")
+    print("\tcondensed:", *remaining, "\n")
 
     # Count
     count = 0
@@ -52,4 +73,5 @@ for i in range(len(times)):
 
 # print(maxTime)
 with open("lifeguards.out", "w") as f:
+    # f.write("%s\n" % maxTime)
     f.write("%s\n" % maxTime)
