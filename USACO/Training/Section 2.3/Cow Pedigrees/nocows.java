@@ -4,75 +4,63 @@ LANG: JAVA
 TASK: nocows
 */
 
-import java.io.*;
 import java.util.*;
+import java.io.*;
+
 class nocows {
     public static void main(String[] args) throws IOException {
-        int N = 0, K = 0;
-        BufferedReader reader = new BufferedReader(new FileReader(new File("nocows.in")));
-        PrintWriter writer = new PrintWriter(new File("nocows.out"));
+        Scanner fin = new Scanner(new File("nocows.in"));
+        String[] data = fin.nextLine().split(" ");
 
-        String[] temp = reader.readLine().split(" ");
-        reader.close();
-        N = Integer.parseInt(temp[0]);
-        K = Integer.parseInt(temp[1]);
-        // System.out.println(N + " " + K);
+        int N = Integer.parseInt(data[0]);
+        int K = Integer.parseInt(data[1]);
+        long[][] dp = new long[(N-1)/2+1][K];
 
-        if (N % 2 == 0) {
-            writer.println(0);
-            writer.close();
-            return;
-        }
-
-        int C = (N-1)/2;
-
-        int[][] dp = new int[C+1][K+1];
         dp[0][0] = 1;
-        for (int i = 1; i < C+1 && i < K+1; i++) {
-            dp[i][i] = (int)Math.pow(2, i-1);
+        for (int n = 1; n < dp.length && n < dp[0].length; n++) {
+            dp[n][n] = (long)Math.pow(2, n-1);
         }
 
-        for (int i = 1; i < K+1 && (int)Math.pow(2, i)-1 < C+1; i++) {
-            dp[(int)Math.pow(2, i)-1][i] = 1;
+        long answer;
+        if (N % 2 == 0) {
+            answer = 0;
+        } else {
+            alg(dp);
+            answer = dp[dp.length-1][dp[0].length-1] % 9901;
         }
+        PrintWriter fout = new PrintWriter(new File("nocows.out"));
+        fout.println(answer);
+        fout.close();
+    }
 
-        for (int[] i: dp) {
-            for (int j: i) System.out.print(j+"\t");
-            System.out.println();
-        }
+    public static void alg(long[][] dp) {
+        for (int N = 1; N < dp.length; N++) {
+            for (int K = 1; K < dp[0].length; K++) {
+                if (N == 0 || K == 0 || dp[N][K] != 0) {
+                    continue;
+                }
 
-        for (int i = 1; i < dp.length; i++) {
-            for (int j = 1; j < i && j < K+1; j++) {
-                if (dp[i][j] != 0) continue;
-                // Get all possible left and right subtrees
-                int[] p = new int[i];
-                for (int sub = 0; sub < (i+1)/2; sub++) {
-                    int real = i-1-sub;
-                    // Check left subtree for height
-                    if (dp[real][j-1] != 0) {
-                        int s = 0;
-                        for (int q = 0; q <= j-1; q++) {
-                            s += dp[sub][q];
-                        }
-                        p[sub] = dp[real][j-1]*s;
+                long sum = 0;
+                // 3 cases:
+                // - largest depth on left, smaller on right
+                for (int l = N-1; l >= 0; l--) {
+                    int r = N-l-1;
+                    long lh = dp[l][K-1];
+                    long rh = 0;
+                    for (int i = 0; i < K-1; i++) {
+                        rh += dp[r][i] % 9901;
                     }
+                    sum = (sum % 9901) + (lh * rh * 2) % 9901;
+
+                    lh = dp[l][K-1] % 9901;
+                    rh = dp[r][K-1] % 9901;
+                    sum += (lh * rh) % 9901;
                 }
-                int r = 0;
-                for (int a = p.length-1; a >= 0; a--) {
-                    p[a] = p[p.length-a-1];
-                    r += p[a];
-                }
-                dp[i][j] = r;
+
+                dp[N][K] = sum;
+                // return sum;
             }
         }
-        
-        System.out.println("\nAfter\n");
-        for (int[] i: dp) {
-            for (int j: i) System.out.print(j+"\t");
-            System.out.println();
-        }
-        
-
-        writer.close();
     }
+
 }
