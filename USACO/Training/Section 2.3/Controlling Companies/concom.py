@@ -5,7 +5,7 @@ TASK: concom
 """
 
 N = c = []
-with open("concom5.in") as f:
+with open("concom2.in") as f:
     N = int(f.readline())
     for i in range(N):
         c.append(tuple(map(int, f.readline().split(" "))))
@@ -56,10 +56,10 @@ empty = [[] for i in range(101)]
 while pairs != empty:
     # print("\n\nRound", rd)
     # rd += 1
-    print("AAA...")
+    # print("AAA...")
     # for i in range(1, len(pairs)):
     for i in listOfOwners:
-        print("\tBBB...", i)
+        # print("\tBBB...", i)
         if len(pairs[i]) == 0: continue
         temp = []
         line = 0
