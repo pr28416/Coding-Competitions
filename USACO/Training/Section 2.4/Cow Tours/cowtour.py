@@ -5,7 +5,8 @@ TASK: cowtour
 """
 
 class Node:
-    def __init__(self, x, y): self.x, self.y, self.neighbors = x, y, []
+    def __init__(self, x, y):
+        self.x, self.y, self.neighbors, self.diameter = x, y, [], 0
     def addNeighbor(self, node): self.neighbors.append(node)
     def distanceTo(self, other): return ((self.x-other.x)**2+(self.y-other.y)**2)**0.5
     def __str__(self): return f"({self.x},{self.y})"
@@ -56,6 +57,7 @@ def smallestPath(index):
         remaining.discard(smallest)
         if len(remaining) == 0 or b == len(remaining) or j == len(paths):
             paths[index] = None
+            del paths[-1]
             return paths
         j += 1
 
@@ -63,4 +65,15 @@ shortestPaths = []
 print("\nSHORTEST PATHS:")
 for i in range(len(nodes)):
     shortestPaths.append(smallestPath(i))
-    print(f"Shortest paths from {i}: {shortestPaths[i]}")
+    print(f"Shortest paths from {i}: ", *map(lambda x: "%.4f, " % x if x else "None, ", shortestPaths[i]))
+groups = []
+temp = {0, *(i for i in range(len(shortestPaths[0])) if shortestPaths[0][i])}
+
+for i in range(1, len(shortestPaths)):
+    if i not in temp:
+        groups.append(tuple(temp))
+        temp = {i, *(j for j in range(len(shortestPaths[i])) if shortestPaths[i][j])}
+
+groups.append(tuple(temp))
+del temp, shortestPaths
+print(*groups)

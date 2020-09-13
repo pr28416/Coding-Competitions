@@ -1,0 +1,1 @@
+# Brute force cows i and j and upper-bound-bin-search cow k - answers for d2 will be between two numbers, so lb-search and ub-search the two numbers.
