@@ -1,37 +1,15 @@
-N, hills = None, None
-with open("skidesign.in") as f:
-    N = int(f.readline())
-    hills = [int(f.readline()) for _ in range(N)]
+N = int(input())
+hills = sorted([int(input()) for _ in range(N)])
 
-hills.sort()
-new = hills.copy()
-print(N, hills)
+minCost = 100000000
+for minH in range(84):
+    maxH = minH + 17
+    # print("checking from %s..%s" % (minH, maxH))
+    cost = 0
+    for hill in hills:
+        if hill >= minH and hill <= maxH: continue
+        elif hill < minH: cost += (minH - hill) ** 2
+        elif hill > maxH: cost += (maxH - hill) ** 2
+    if cost < minCost: minCost = cost
 
-lo, up = 0, len(new)-1
-
-while abs(new[up] - new[lo]) > 17:
-    if lo == len(new)-1: break
-    if up == 0: break
-
-    if lo > len(new)-up:
-        # Increase lower bounds
-        if new[lo] == new[lo+1]:
-            lo += 1
-            continue
-        else:
-            new[lo] += 1
-    else:
-        # Decrease upper bounds
-        if new[up] == new[up-1]:
-            up -= 1
-            continue
-        else:
-            new[up] -= 1
-
-for i in range(lo):
-    new[i] = new[lo]
-
-for i in range(up+1, len(new)):
-    new[i] = new[up]
-
-print(new)
+print(minCost)
