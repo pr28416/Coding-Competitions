@@ -37,7 +37,6 @@ for log in logs:
         continue
     # Different cows
     if log[1] != bestCows[loc]:
-        print("d")
         # Cow should be added to list
         if cows[log[1]] == currentMax:
             bestCows.insert(loc, log[1])
@@ -49,7 +48,6 @@ for log in logs:
             count += 1
     # Same cows
     else:
-        print("s")
         # Cow should be the only one
         if cows[log[1]] > currentMax:
             bestCows = [log[1]]
