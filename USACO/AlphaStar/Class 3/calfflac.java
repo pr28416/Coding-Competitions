@@ -1,16 +1,12 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class calfflac {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        String string = "", alpha = "abcdefghijklmnopqrstuvwxyz";
-        // debug
-        // string += input.nextLine() + "\n";
+        String string = "";
         while (input.hasNextLine()) {
             string += input.nextLine()+"\n";
         }
-        // System.out.println(string);
         input.close();
 
         char[] modArray = new char[2*string.length()-1];
@@ -19,10 +15,8 @@ public class calfflac {
         }
         int[] code = new int[modArray.length];
         for (int i = 0; i < code.length; i+=2) {
-            if (alpha.indexOf(Character.toLowerCase(modArray[i])) != -1) code[i] = 1;
+            if (isValid(modArray[i])) code[i] = 1;
         }
-        // System.out.println(Arrays.toString(modArray));
-        // System.out.println(Arrays.toString(code));
 
         int[] answer = {modArray.length, modArray.length};
 
@@ -50,9 +44,13 @@ public class calfflac {
         int c = 0;
         for (int i = answer[0]; i <= answer[1]; i+=2) {
             ans += modArray[i];
-            if (alpha.indexOf(Character.toLowerCase(modArray[i])) != -1) c+=1;
+            if (isValid(modArray[i])) c+=1;
         }
         System.out.println(c);
         System.out.println(ans);
+    }
+
+    public static boolean isValid(char c) {
+        return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
     }
 }
