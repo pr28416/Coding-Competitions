@@ -13,10 +13,6 @@ public class calfflac {
         for (int i = 0; i < modArray.length; i++) {
             modArray[i] = i%2==0 ? string.charAt(i/2) : '#';
         }
-        int[] code = new int[modArray.length];
-        for (int i = 0; i < code.length; i+=2) {
-            if (isValid(modArray[i])) code[i] = 1;
-        }
 
         int[] answer = {modArray.length, modArray.length};
 
@@ -28,8 +24,8 @@ public class calfflac {
             int lo = fin[0], up = fin[1];
 
             while (lo > -1 && up < modArray.length) {
-                if (code[lo] == 0) lo -= 2;
-                else if (code[up] == 0) up += 2;
+                if (!isValid(modArray[lo])) lo -= 2;
+                else if (!isValid(modArray[up])) up += 2;
                 else if (Character.toLowerCase(modArray[lo]) == Character.toLowerCase(modArray[up])) {
                     fin[0] = lo; fin[1] = up;
                     lo -= 2; up += 2;
