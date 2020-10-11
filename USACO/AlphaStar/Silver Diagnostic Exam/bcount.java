@@ -15,6 +15,7 @@ public class bcount {
             queries[i][0] = input.nextInt();
             queries[i][1] = input.nextInt();
         }
+        input.close();
         int[] prev = {1, N};
         int[] breedCount = new int[3];
         int[][] answers = new int[Q][3];
