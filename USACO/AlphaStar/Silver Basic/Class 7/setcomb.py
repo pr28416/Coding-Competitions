@@ -4,7 +4,6 @@ N = int(input())
 
 def recurse(c, used, k, j):
     global nums, N, M
-    # print(used)
     if c == k:
         print("".join(nums[i] for i in range(M) if used[i]))
     else:
