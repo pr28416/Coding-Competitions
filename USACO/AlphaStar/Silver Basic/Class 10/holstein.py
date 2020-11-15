@@ -1,22 +1,25 @@
-"""
-[smallest feed, largest feed]
-------
+V = int(input())
+requirements = list(map(int, input().split(" ")))
+G = int(input())
+feedTypes = [list(map(int, input().split(" "))) for _ in range(G)]
 
-900 150 389 399
-200 300 200 300
-50   50  50  50
+totalOnes = V
+bestAnswer = []
+def subset(s, i, o):
+    global bestAnswer, totalOnes, requirements, feedTypes, V, G
+    if o > totalOnes: return
+    elif i >= G:
+        m = [0] * V
+        for j in range(G):
+            if s[j] == 0: continue
+            for k in range(V): m[k] += feedTypes[j][k]
+        for j in range(V):
+            if requirements[j] > m[j]: return
+        bestAnswer = [i+1 for i in range(G) if s[i]]
+        totalOnes = o
+    else:
+        s[i] = 0; subset(s, i+1, o)
+        s[i] = 1; subset(s, i+1, o+1)
 
-
-0001
-0010 0011
-0100 0101 0110 0111
-1000 1001 1010 1011 1100 1101 1110 1111
-
-001
-010
-100
-011
-101
-110
-111
-"""
+subset([0]*G, 0, 0)
+print(totalOnes, *sorted(bestAnswer))

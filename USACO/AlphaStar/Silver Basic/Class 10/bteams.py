@@ -1,5 +1,4 @@
 cows = [int(input()) for _ in range(12)]
-
 minSkill = None
 def recurse(a, w, b, x, c, y, d, z, i):
     global cows, minSkill
