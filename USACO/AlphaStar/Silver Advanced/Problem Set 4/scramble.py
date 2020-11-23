@@ -1,10 +1,4 @@
-def bs(x, lst, comp):
-    lo, up = 0, len(lst)
-    while lo < up:
-        y = (lo+up)//2
-        if comp(x, lst[y]): up=y
-        else: lo=y+1
-    return lo
+from bisect import bisect_left as bsl, bisect_right as bsr
 
 N = int(input())
 original = [input() for i in range(N)]
@@ -21,13 +15,7 @@ for i in range(N):
     ascending = "".join(sorted(original[i]))
     descending = "".join(sorted(original[i], reverse=True))
 
-    # Search ascending in backward - best loc
-    loc = bs(ascending, backward, lambda x, y: x <= y)
-    answers[i][0] = loc
+    answers[i][0] = bsl(backward, ascending)
+    answers[i][1] = bsr(forward, descending)-1
 
-    # Search descending in forward - worst loc
-    loc = bs(descending, forward, lambda x, y: x < y)
-    answers[i][1] = loc-1
-
-for i in answers:
-    print(i[0]+1, i[1]+1)
+for i in answers: print(i[0]+1, i[1]+1)
