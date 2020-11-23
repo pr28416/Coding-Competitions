@@ -1,13 +1,33 @@
+def bs(x, lst, comp):
+    lo, up = 0, len(lst)
+    while lo < up:
+        y = (lo+up)//2
+        if comp(x, lst[y]): up=y
+        else: lo=y+1
+    return lo
+
 N = int(input())
-cows = [(input(), i) for i in range(N)]
+original = [input() for i in range(N)]
+answers = [[0, 0] for _ in range(N)]
 
-forward = sorted(map(lambda x: ("".join(sorted(x[0])), x[1]), cows))
-for i in range(N): forward[i] = (*forward[i], i+1)
-forward.sort(key=lambda x: x[1])
-
-backward = sorted(map(lambda x: ("".join(sorted(x[0], reverse=True)), x[1]), cows))
-for i in range(N): backward[i] = (*backward[i], i+1)
-backward.sort(key=lambda x: x[1])
+forward = sorted(map(
+    lambda x: "".join(sorted(x)),
+    original))
+backward = sorted(map(
+    lambda x: "".join(sorted(x, reverse=True)),
+    original))
 
 for i in range(N):
-    print(forward[i][2], backward[i][2])
+    ascending = "".join(sorted(original[i]))
+    descending = "".join(sorted(original[i], reverse=True))
+
+    # Search ascending in backward - best loc
+    loc = bs(ascending, backward, lambda x, y: x <= y)
+    answers[i][0] = loc
+
+    # Search descending in forward - worst loc
+    loc = bs(descending, forward, lambda x, y: x < y)
+    answers[i][1] = loc-1
+
+for i in answers:
+    print(i[0]+1, i[1]+1)
