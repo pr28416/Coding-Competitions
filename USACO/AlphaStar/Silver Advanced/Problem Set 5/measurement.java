@@ -1,44 +1,10 @@
-/*
-Milk Measurement
-================
-
-Each of Farmer John's cows initially produces G gallons of milk per day (1 <= G <= 10^9). Since the milk output of a cow is known to potentially change over time, Farmer John decides to take periodic measurements of milk output and write these down in a log book. Entries in his log look like this:
-
-35 1234 -2
-14 2345 +3
-
-The first entry indicates that on day 35, cow #1234's milk output was 2 gallons lower than it was when last measured. The next entry indicates that on day 14, cow #2345's milk output increased by 3 gallons from when it was last measured. Farmer John has only enough time to make at most one measurement on any given day. Unfortunately, he is a bit disorganized, and doesn't necessarily write down his measurements in chronological order.
-
-To keep his cows motivated, Farmer John proudly displays on the wall of his barn the picture of whichever cow currently has the highest milk output (if several cows tie for the highest milk output, he displays all of their pictures). Please determine the number of days on which Farmer John would have needed to change this display.
-
-Note that Farmer John has a very large herd of cows, so although some of them are noted in his log book as changing their milk production, there are always plenty of other cows around whose milk output level remains at G gallons.
-
-PROBLEM NAME: measurement
-
-INPUT FORMAT:
-
-The first line of input contains the number of measurements N that Farmer John makes (1 <= N <= 100,000), followed by G. Each of the next N lines contains one measurement, in the format above, specifying a day (an integer in the range 1..10^6), the integer ID of a cow (in the range 1..10^9), and the change in her milk output since it was last measured (a nonzero integer). Each cow's milk output will always be in the range 0..10^9.
-
-OUTPUT FORMAT:
-
-Please output the number of days on which Farmer John needs to adjust his motivational display.
-
-SAMPLE INPUT:
-
-4 10
-7 3 +3
-4 2 -1
-9 3 -1
-1 1 +2
-
-SAMPLE OUTPUT:
-
-3
-*/
 import java.util.*;
+import java.io.*;
 public class measurement {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        // Get data
         Scanner input = new Scanner(System.in);
+        // Scanner input = new Scanner(new File("measurement.in"));
         int N = input.nextInt(), G = input.nextInt();
         int[][] entries = new int[N][3];
         for (int i = 0; i < N; i++) {
@@ -52,87 +18,92 @@ public class measurement {
                 return a[0] - b[0];
             }
         });
-        
-        HashMap<Integer, Integer> production = new HashMap<Integer, Integer>();
-        TreeMap<Integer, TreeSet<Integer>> leaderboard = new TreeMap<Integer, TreeSet<Integer>>();
-        int changes = 0;
-        leaderboard.put(G, new TreeSet<Integer>());
-        for (int[] i: entries) {
-            // System.out.println(Arrays.toString(i));
-            production.put(i[1], G);
-            leaderboard.get(G).add(i[1]);
-        }
-        production.put(0, G);
-        leaderboard.get(G).add(0);
-        
-        for (int[] entry: entries) {
-            // System.out.println("New entry: " + Arrays.toString(entry));
-            int prevMax, length;
-            TreeSet<Integer> prevMaxSet;
-            if (leaderboard.isEmpty()) {
-                // System.out.println("\tOriginal last: None (empty)");
-                prevMax = G;
-                prevMaxSet = new TreeSet<Integer>();
-                length = 0;
-            } else {
-                prevMax = leaderboard.lastKey();
-                prevMaxSet = new TreeSet<Integer>(leaderboard.get(prevMax));
-                length = prevMaxSet.size();
-                // System.out.println("\tOriginal last: " + leaderboard.lastKey() + " --> " + leaderboard.get(prevMax) + ", size = " + length);
-            }
 
-            // Update production and leaderboard
-            if (!production.containsKey(entry[1])) production.put(entry[1], G);
-            int leadKey = production.get(entry[1]);
-            if (!leaderboard.containsKey(leadKey)) {
-                leaderboard.put(leadKey, new TreeSet<Integer>());
-                leaderboard.get(leadKey).add(entry[1]);
-            }
-            leaderboard.get(leadKey).remove(entry[1]);
-            if (leaderboard.get(leadKey).isEmpty()) {
-                leaderboard.remove(leadKey);
+        // for (int[] i: entries) System.out.println(Arrays.toString(i));
+
+        // Initial setup of production and leaderboard maps
+        HashMap<Integer, Integer> production = new HashMap<Integer, Integer>();
+        production.put(0, G);
+        for (int[] i: entries) production.put(i[1], G);
+        
+        TreeMap<Integer, HashSet<Integer>> leaderboard = new TreeMap<Integer, HashSet<Integer>>();
+        HashSet<Integer> initial = new HashSet<Integer>();
+        for (int[] i: entries) initial.add(i[1]);
+        initial.add(0);
+        leaderboard.put(G, initial);
+        initial = null;
+        input = null;
+        
+        // System.out.println(production);
+        // System.out.println(leaderboard);
+
+        // Run through entries
+        int change = 0;
+
+        for (int[] entry: entries) {
+            // boolean removeChange = false;
+            // boolean insertChange = false;
+
+            // Store initial max-key and its length
+            int initialMaxKey = leaderboard.lastKey();
+            int initialMaxKeyLength = leaderboard.get(initialMaxKey).size();
+            int initialSingleValue = -1;
+            if (initialMaxKeyLength == 1) initialSingleValue = leaderboard.get(initialMaxKey).iterator().next();
+
+            // PART 1: Remove old value from leaderboard and production
+
+            // Remove the number from leaderboard
+            int initProdValue = production.get(entry[1]);
+            leaderboard.get(initProdValue).remove(entry[1]);
+
+            // Remove entire object if necessary
+            if (leaderboard.get(initProdValue).isEmpty()) {
+                leaderboard.remove(initProdValue);
             }
             
-            int newKey = leadKey + entry[2];
-            production.put(entry[1], newKey);
-
-            if (!leaderboard.containsKey(newKey)) {
-                leaderboard.put(newKey, new TreeSet<Integer>());
+            // PART 2: Update new values for production and leaderboard
+            
+            // Change production value to new value
+            production.put(entry[1], entry[2] + production.get(entry[1]));
+            
+            // Create new object for update value if necessary
+            int newProdValue = production.get(entry[1]);
+            if (!leaderboard.containsKey(newProdValue)) {
+                leaderboard.put(newProdValue, new HashSet<Integer>());
             }
-            leaderboard.get(newKey).add(entry[1]);
+            
+            // Add new value (entry key) to appropriate key (new prod value)
+            leaderboard.get(newProdValue).add(entry[1]);
 
-            // Check for changes
+            // PART 3: Check for changes
+
+            // Check if max changed after removal
             int last = leaderboard.lastKey();
-            if (prevMax != last) {
-                if (!prevMaxSet.equals(leaderboard.get(last))) {
-                    changes += 1;
+            if (last != initialMaxKey) {
+                int newLast = leaderboard.get(last).iterator().next();
+                if (leaderboard.get(last).size() > 1 || newLast != initialSingleValue) {
+                    change += 1;
+                    // System.out.println("New max: " + leaderboard.lastKey());
+                } else {
+                    // System.out.printf("There was new max but values were the same: %s and %s (from %s)\n", last, newLast, leaderboard.get(last));
                 }
-            } else if (length != leaderboard.get(last).size()) {
-                changes += 1;
+            }
+            // Otherwise, check if max length changed
+            else if (leaderboard.get(leaderboard.lastKey()).size() != initialMaxKeyLength) {
+                change += 1;
+                // System.out.println("Size of max changed: " + initialMaxKeyLength + " --> " + leaderboard.get(leaderboard.lastKey()).size());
+            } else {
+                // System.out.println("No change");
             }
 
-            // System.out.println(production);
-            // System.out.println(leaderboard);
-            if (leaderboard.isEmpty()) {
-                // System.out.println("\tNew last: None (empty)");
-            } else {
-                // System.out.println("\tNew last: " + leaderboard.lastKey() + " --> " + leaderboard.get(leaderboard.lastKey()));
-            }
-            // System.out.println("Change count: " + changes);
+            // System.out.println("\tproduction: " + production);
+            // System.out.println("\tleaderboard: " + leaderboard);
             // System.out.println();
         }
 
-        // System.out.println("Final changes: " + changes);
-        System.out.println(changes);
+        System.out.println(change);
+        // PrintWriter output = new PrintWriter(new File("measurement.out"));
+        // output.println(change);
+        // output.close();
     }
 }
-
-/*
-production (hashmap) {
-    1: 12
-}
-
-leaderboard (treemap) {
-                12: 1
-}
-*/
