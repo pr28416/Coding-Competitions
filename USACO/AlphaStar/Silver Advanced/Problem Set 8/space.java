@@ -28,7 +28,9 @@ public class space {
         int k = 1;
 
         while (asteroids.size() > 0) {
+            // System.out.println("next asteroid: " + asteroids.iterator().next());
             List<Integer> asteroid = asteroids.iterator().next();
+            asteroids.remove(asteroid);
             int i = asteroid.get(0), j = asteroid.get(1);
             if (visited[i][j] != 0 || space[i][j] != '*') {
                 asteroids.remove(asteroid);
