@@ -24,15 +24,9 @@ public class cowntagion {
 
         input.close();
 
-        // for (Collection<Integer> i: adjList) System.out.println(i);
-        // for (int i: numCows) System.out.println(i);
-
         int[] visited = new int[N];
         visited[0] = 1;
-        // while (cap < N-1) {
-        //     cap *= 2;
-        //     c++;
-        // }
+
         int fin = 0;
         Queue<Integer> queue = new LinkedList<Integer>();
         queue.add(0);
@@ -40,7 +34,7 @@ public class cowntagion {
             int item = queue.remove();
 
             // Duplicate enough cows to cover adjacent
-            while (visited[item] < adjList.get(item).size()) {
+            while (visited[item]-1 < adjList.get(item).size()) {
                 visited[item] *= 2;
                 fin += 1;
             }
@@ -50,23 +44,10 @@ public class cowntagion {
                 visited[n] = 1;
                 fin += 1;
                 queue.add(n);
-                // adjList.get(n).remove(item);
+                adjList.get(n).remove(item);
             }
         }
 
-        //     for (int n: adjList.get(item)) {
-        //         if (visited[n] == 0) {
-        //             visited[n] = (item == 0 ? 0 : visited[item])+1;
-        //             queue.add(n);
-        //         }
-        //     }
-        // }
-        // int sum = c;
-        // for (int i = 1; i < N; i++) {
-        //     sum += visited[i];
-        // }
-        // // System.out.println(Arrays.toString(visited));
-        // System.out.println(sum);
         System.out.println(fin);
     }
 }
