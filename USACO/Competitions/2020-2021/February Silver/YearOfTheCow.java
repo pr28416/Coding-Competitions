@@ -1,10 +1,9 @@
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class YearOfTheCow {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        int N = input.nextInt(), K = input.nextInt();
+        int N = input.nextInt();//, K = input.nextInt();
         int[] years = new int[N];
         for (int i = 0; i < N; i++) {
             years[i] = input.nextInt();
@@ -31,7 +30,7 @@ public class YearOfTheCow {
 
         trav = ep2;
         while (trav != null && trav.next != null && trav.next.next != null) {
-            if (trav.item - trav.next)
+            // if (trav.item - trav.next)
         }
 
         ArrayList<Integer> endpoints = new ArrayList<Integer>();
@@ -40,6 +39,8 @@ public class YearOfTheCow {
             endpoints.add(trav.item);
             trav = trav.next;
         }
+
+        input.close();
         
         System.out.println(endpoints);
     }
