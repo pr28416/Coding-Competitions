@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2016-2017/2016-2017.iml" filepath="$PROJECT_DIR$/Competitions/2016-2017/2016-2017.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2017-2018/2017-2018.iml" filepath="$PROJECT_DIR$/Competitions/2017-2018/2017-2018.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2020-2021/2020-2021.iml" filepath="$PROJECT_DIR$/Competitions/2020-2021/2020-2021.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2021-2022/2021-2022.iml" filepath="$PROJECT_DIR$/Competitions/2021-2022/2021-2022.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AlphaStar/AlphaStar.iml" filepath="$PROJECT_DIR$/AlphaStar/AlphaStar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2019-2020/December Silver/December Silver.iml" filepath="$PROJECT_DIR$/Competitions/2019-2020/December Silver/December Silver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2019-2020/January Silver/January Silver.iml" filepath="$PROJECT_DIR$/Competitions/2019-2020/January Silver/January Silver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Training/Section 1.2/Section 1.2.iml" filepath="$PROJECT_DIR$/Training/Section 1.2/Section 1.2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Training/Section 1.5/Section 1.5.iml" filepath="$PROJECT_DIR$/Training/Section 1.5/Section 1.5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Training/Section 2.2/Section 2.2.iml" filepath="$PROJECT_DIR$/Training/Section 2.2/Section 2.2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Training/Section 2.3/Section 2.3.iml" filepath="$PROJECT_DIR$/Training/Section 2.3/Section 2.3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Training/Section 2.4/Section 2.4.iml" filepath="$PROJECT_DIR$/Training/Section 2.4/Section 2.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AlphaStar/Silver Advanced/Silver Advanced.iml" filepath="$PROJECT_DIR$/AlphaStar/Silver Advanced/Silver Advanced.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AlphaStar/Silver Basic/Silver Basic.iml" filepath="$PROJECT_DIR$/AlphaStar/Silver Basic/Silver Basic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Competitions/2019-2020/US Open Silver/US Open Silver.iml" filepath="$PROJECT_DIR$/Competitions/2019-2020/US Open Silver/US Open Silver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/USACO.iml" filepath="$PROJECT_DIR$/.idea/USACO.iml" />
+    </modules>
+  </component>
+</project>
